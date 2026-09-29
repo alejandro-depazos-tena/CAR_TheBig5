@@ -1,0 +1,19 @@
+Entorno: Ubuntu 24.04.4 LTS sobre WSL 2
+Procesador: AMD Ryzen 7 5700U with Radeon Graphics
+Compilador: GCC 13.3.0
+Opciones: -O2 -Wall -Wextra -pthread
+
+Comprobador:
+hilos terminados        : 4 de 4
+crear y esperar 4 hilos : 0.632 ms
+resolucion del reloj    : 20 ns
+ENTORNO LISTO
+
+Ejercicio 1:
+                           minimo         media   (5 repeticiones)
+hilo    en tanda  :       97.2 us      100.1 us
+hilo    uno a uno :      155.6 us      160.8 us
+proceso en tanda  :      217.4 us      221.4 us
+proceso uno a uno :      587.9 us      618.2 us
+factor proceso/hilo en tanda  :      2 x
+factor proceso/hilo uno a uno :      4 x
