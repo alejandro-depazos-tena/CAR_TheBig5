@@ -1,0 +1,20 @@
+Entorno: Ubuntu 24.04.4 LTS sobre WSL 2
+Procesador: AMD Ryzen 7 5700U with Radeon Graphics
+Compilador: GCC 13.3.0
+Opciones: -O2 -Wall -Wextra -pthread
+
+Comprobador:
+hilos terminados        : 4 de 4
+crear y esperar 4 hilos : 0.786 ms
+resolucion del reloj    : 35 ns
+ENTORNO LISTO
+
+Ejercicio 3:
+   P  suelto(s)  mutex(s)  atomico(s)  privado(s)  correctas  suelto
+   1     0.0154    0.0814      0.0277      0.0019  las 3 si   si
+   2     0.0142    0.6681      0.1864      0.0029  las 3 si   NO
+   4     0.0148    1.1832      0.3843      0.0017  las 3 si   NO
+   8     0.0240    2.7078      0.8391      0.0030  las 3 si   NO
+   12    0.0333    3.9719      1.2227      0.0039  las 3 si   NO
+   24    0.0596    8.8918      2.5084      0.0071  las 3 si   NO
+
