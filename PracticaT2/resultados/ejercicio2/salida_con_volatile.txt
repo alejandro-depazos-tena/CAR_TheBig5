@@ -1,0 +1,21 @@
+K = 1000 incrementos por hilo
+ hilos esperado minimo obtenido fallan perdida media
+     2        2000              1129   1/20        2.2 %
+     4        4000              4000   0/20        0.0 %
+     8        8000              8000   0/20        0.0 %
+    12       12000             11410   2/20        0.5 %
+    24       24000             23934   1/20        0.0 %
+K = 100000 incrementos por hilo
+ hilos esperado minimo obtenido fallan perdida media
+     2      200000            110188   7/20        8.7 %
+     4      400000            217604  20/20       24.9 %
+     8      800000            338540  20/20       38.9 %
+    12     1200000            382003  20/20       43.9 %
+    24     2400000            487599  20/20       58.3 %
+K = 10000000 incrementos por hilo
+ hilos esperado minimo obtenido fallan perdida media
+     2    20000000          10062663  20/20       48.2 %
+     4    40000000          11308055  20/20       62.4 %
+     8    80000000          28101579  20/20       60.7 %
+    12   120000000          30386708  20/20       71.7 %
+    24   240000000          34379087  20/20       82.5 %
