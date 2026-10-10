@@ -1,0 +1,8 @@
+24 hilos, 2000000 posiciones, 10 ejecuciones por bucle
+bucle fallos posiciones mal (peor)
+1 b[i] = 2*b[i]                       0/10              0
+2 b[i] = b[i-1] + b[i]               10/10        1916665
+3 b[i] = b[i+1] + 1                  10/10             18
+3 arreglado                           0/10              0
+4 s += a[i] (sin reduction)          10/10 error relativo 0.833
+5 s += a[i] (con reduction)           0/10
