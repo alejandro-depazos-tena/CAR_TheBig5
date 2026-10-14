@@ -1,0 +1,10 @@
+5:l_reduction._omp_fn.0:
+50:	lock addq	%rcx, (%rbx)
+71:l_atomic._omp_fn.0:
+110:	lock addq	%rsi, (%rax)
+135:l_critical._omp_fn.0:
+201:d_reduction._omp_fn.0:
+259:	lock cmpxchgq	%rcx, (%rbx)
+284:d_atomic._omp_fn.0:
+329:	lock cmpxchgq	%r8, (%rsi)
+358:d_critical._omp_fn.0:

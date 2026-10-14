@@ -1,0 +1,12 @@
+8 hilos, 20000000 sumas, mejor de 3
+acumulador de tipo double
+ secuencial   0.0118 s
+ critical     2.7512 s
+ atomic       2.0430 s   1.35 veces mas rapido que critical
+ reduction    0.0050 s    555 veces mas rapido que critical
+acumulador de tipo long long
+ secuencial   0.0103 s
+ critical     2.4801 s
+ atomic       0.7271 s   3.41 veces mas rapido que critical
+ reduction    0.0051 s    489 veces mas rapido que critical
+los ocho acumulados dan lo mismo
