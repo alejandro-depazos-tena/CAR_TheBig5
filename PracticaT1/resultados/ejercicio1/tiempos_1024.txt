@@ -1,0 +1,83 @@
+REPETICIÓN 1 DE 5
+
+SIMULACIÓN TÉRMICA — VERSIÓN SECUENCIAL
+
+Tamaño de la malla:      1024 × 1024
+Modo:                   Medida (pasos fijos)
+Pasos ejecutados:       300
+Tolerancia configurada: 1e-06 (no se aplica en modo medida)
+Residuo final:          0.0806443270516
+Checksum interior:      940239.50783734128
+Tiempo de ejecución:    0.652555053 s
+Motivo de parada:       Límite de pasos alcanzado
+
+COMPROBACIONES
+Estado:                 No ejecutadas
+
+
+REPETICIÓN 2 DE 5
+
+SIMULACIÓN TÉRMICA — VERSIÓN SECUENCIAL
+
+Tamaño de la malla:      1024 × 1024
+Modo:                   Medida (pasos fijos)
+Pasos ejecutados:       300
+Tolerancia configurada: 1e-06 (no se aplica en modo medida)
+Residuo final:          0.0806443270516
+Checksum interior:      940239.50783734128
+Tiempo de ejecución:    0.633790492 s
+Motivo de parada:       Límite de pasos alcanzado
+
+COMPROBACIONES
+Estado:                 No ejecutadas
+
+
+REPETICIÓN 3 DE 5
+
+SIMULACIÓN TÉRMICA — VERSIÓN SECUENCIAL
+
+Tamaño de la malla:      1024 × 1024
+Modo:                   Medida (pasos fijos)
+Pasos ejecutados:       300
+Tolerancia configurada: 1e-06 (no se aplica en modo medida)
+Residuo final:          0.0806443270516
+Checksum interior:      940239.50783734128
+Tiempo de ejecución:    0.634163802 s
+Motivo de parada:       Límite de pasos alcanzado
+
+COMPROBACIONES
+Estado:                 No ejecutadas
+
+
+REPETICIÓN 4 DE 5
+
+SIMULACIÓN TÉRMICA — VERSIÓN SECUENCIAL
+
+Tamaño de la malla:      1024 × 1024
+Modo:                   Medida (pasos fijos)
+Pasos ejecutados:       300
+Tolerancia configurada: 1e-06 (no se aplica en modo medida)
+Residuo final:          0.0806443270516
+Checksum interior:      940239.50783734128
+Tiempo de ejecución:    0.623602062 s
+Motivo de parada:       Límite de pasos alcanzado
+
+COMPROBACIONES
+Estado:                 No ejecutadas
+
+
+REPETICIÓN 5 DE 5
+
+SIMULACIÓN TÉRMICA — VERSIÓN SECUENCIAL
+
+Tamaño de la malla:      1024 × 1024
+Modo:                   Medida (pasos fijos)
+Pasos ejecutados:       300
+Tolerancia configurada: 1e-06 (no se aplica en modo medida)
+Residuo final:          0.0806443270516
+Checksum interior:      940239.50783734128
+Tiempo de ejecución:    0.622786105 s
+Motivo de parada:       Límite de pasos alcanzado
+
+COMPROBACIONES
+Estado:                 No ejecutadas
