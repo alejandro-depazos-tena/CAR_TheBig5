@@ -1,15 +1,17 @@
 # CAR_TheBig5
 
-Repositorio de la práctica **PracticaT2**.
+Repositorio de las prácticas de Computación de Alto Rendimiento.
 
 ## Estructura del proyecto
 
 ```text
-PracticaT2/
-└── docs/
+PracticaT1/   # Simulación térmica paralela con OpenMP
+PracticaT2/   # Procesos, hilos y carreras de datos
+PracticaT3/   # Bucles, datos y tareas con OpenMP
 ```
 
-La carpeta `docs/` está destinada a la documentación del proyecto.
+Cada práctica mantiene la misma organización:
+`docs/`, `include/`, `src/`, `resultados/` y `entrega/`.
 
 ## Estado del proyecto
 
@@ -18,8 +20,8 @@ El proyecto se encuentra en fase inicial de organización. En este repositorio s
 ## Cómo empezar
 
 1. Clona el repositorio.
-2. Accede a la carpeta del proyecto.
-3. Consulta la documentación disponible en `PracticaT2/docs/`.
+2. Accede a la carpeta de la práctica correspondiente.
+3. Consulta la documentación disponible en su carpeta `docs/`.
 
 ## Autores
 
