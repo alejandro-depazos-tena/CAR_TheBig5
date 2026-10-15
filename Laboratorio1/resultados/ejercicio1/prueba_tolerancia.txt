@@ -1,3 +1,4 @@
+
 SIMULACIÓN TÉRMICA — VERSIÓN SECUENCIAL
 
 Tamaño de la malla:      64 × 64
@@ -14,3 +15,4 @@ Bordes constantes:      OK
 Temperaturas en rango:  OK
 Residuo no creciente:   OK
 Resultado global:       OK
+

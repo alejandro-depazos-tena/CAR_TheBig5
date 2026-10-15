@@ -1,0 +1,2 @@
+N,modo,pasos,tolerancia,residuo,checksum,tiempo_s,comprobaciones,parada
+512,medida,300,9.9999999999999995e-07,0.080644327051587084,464885.42829014314,0.105839318,OK,limite_pasos

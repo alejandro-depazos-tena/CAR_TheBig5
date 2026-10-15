@@ -1,0 +1,8 @@
+gcc -Wall -Wextra -O2 -std=c11 -fopenmp src/ejercicio1/p1_ej1.c -o bin/p1_ej1 -lm
+gcc -Wall -Wextra -O2 -std=c11 -fopenmp src/ejercicio2/p1_ej2.c -o bin/p1_ej2 -lm
+gcc -Wall -Wextra -O2 -std=c11 -fopenmp src/ejercicio3/p1_ej3.c -o bin/p1_ej3 -lm
+gcc -Wall -Wextra -O2 -std=c11 -fopenmp src/ejercicio4/p1_ej4.c -o bin/p1_ej4 -lm
+gcc -Wall -Wextra -O2 -std=c11 -fopenmp src/ejercicio5/p1_ej5.c -o bin/p1_ej5 -lm
+gcc -Wall -Wextra -O2 -std=c11 -fopenmp src/ejercicio6/p1_ej6.c -o bin/p1_ej6 -lm
+gcc -Wall -Wextra -O2 -std=c11 -fopenmp src/ejercicio6/p1_stream.c -o bin/p1_stream -lm
+(si no aparece ningun aviso arriba, todo compila sin avisos)
