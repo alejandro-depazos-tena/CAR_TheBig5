@@ -3,7 +3,7 @@
 Estructura de trabajo:
 
 ```text
-PracticaT1/
+Laboratorio1/
 ├── docs/                 # Enunciado y documentación de la práctica
 ├── include/              # Cabeceras compartidas, por ejemplo crono.h
 ├── src/

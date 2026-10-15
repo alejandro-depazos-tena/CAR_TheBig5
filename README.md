@@ -5,7 +5,7 @@ Repositorio de las prácticas de Computación de Alto Rendimiento.
 ## Estructura del proyecto
 
 ```text
-PracticaT1/   # Simulación térmica paralela con OpenMP
+Laboratorio1/ # Simulación térmica paralela con OpenMP
 PracticaT2/   # Procesos, hilos y carreras de datos
 PracticaT3/   # Bucles, datos y tareas con OpenMP
 ```
