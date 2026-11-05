@@ -194,6 +194,9 @@ int main(int argc, char **argv)
         printf("%d,%d,%zu,%zu,%.9f,%.4f,%.4f,%.6e,%d,%.6f,%.4f,%.6e\n", p, reales,
                n, steps, t, t_seq / t, t_seq / (t * p), t / steps, cs_ok, t_techo,
                techo, region);
+        /* Volcar cada fila al momento: si la ejecucion se corta, lo medido
+         * hasta ahi no se pierde (stdout a fichero va con buffer completo). */
+        fflush(stdout);
     }
     fprintf(stderr, "(sumidero del techo: %g)\n", sink);
     free(a); free(b);
