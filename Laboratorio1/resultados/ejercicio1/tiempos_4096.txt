@@ -8,7 +8,7 @@ Pasos ejecutados:       300
 Tolerancia configurada: 1e-06 (no se aplica en modo medida)
 Residuo final:          0.0806443270516
 Checksum interior:      3792363.9851164636
-Tiempo de ejecución:    11.476650134 s
+Tiempo de ejecución:    11.309697971 s
 Motivo de parada:       Límite de pasos alcanzado
 
 COMPROBACIONES
@@ -25,7 +25,7 @@ Pasos ejecutados:       300
 Tolerancia configurada: 1e-06 (no se aplica en modo medida)
 Residuo final:          0.0806443270516
 Checksum interior:      3792363.9851164636
-Tiempo de ejecución:    12.945352340 s
+Tiempo de ejecución:    11.133429724 s
 Motivo de parada:       Límite de pasos alcanzado
 
 COMPROBACIONES
@@ -42,7 +42,7 @@ Pasos ejecutados:       300
 Tolerancia configurada: 1e-06 (no se aplica en modo medida)
 Residuo final:          0.0806443270516
 Checksum interior:      3792363.9851164636
-Tiempo de ejecución:    12.181405025 s
+Tiempo de ejecución:    11.073620528 s
 Motivo de parada:       Límite de pasos alcanzado
 
 COMPROBACIONES
@@ -59,7 +59,7 @@ Pasos ejecutados:       300
 Tolerancia configurada: 1e-06 (no se aplica en modo medida)
 Residuo final:          0.0806443270516
 Checksum interior:      3792363.9851164636
-Tiempo de ejecución:    12.601672468 s
+Tiempo de ejecución:    11.152650992 s
 Motivo de parada:       Límite de pasos alcanzado
 
 COMPROBACIONES
@@ -76,7 +76,7 @@ Pasos ejecutados:       300
 Tolerancia configurada: 1e-06 (no se aplica en modo medida)
 Residuo final:          0.0806443270516
 Checksum interior:      3792363.9851164636
-Tiempo de ejecución:    13.220687062 s
+Tiempo de ejecución:    10.882306125 s
 Motivo de parada:       Límite de pasos alcanzado
 
 COMPROBACIONES

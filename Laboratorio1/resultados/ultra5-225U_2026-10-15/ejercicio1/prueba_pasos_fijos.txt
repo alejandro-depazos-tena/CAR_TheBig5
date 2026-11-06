@@ -1,0 +1,18 @@
+
+SIMULACIÓN TÉRMICA — VERSIÓN SECUENCIAL
+
+Tamaño de la malla:      512 × 512
+Modo:                   Medida (pasos fijos)
+Pasos ejecutados:       300
+Tolerancia configurada: 1e-06 (no se aplica en modo medida)
+Residuo final:          0.0806443270516
+Checksum interior:      464885.42829014314
+Tiempo de ejecución:    0.120874300 s
+Motivo de parada:       Límite de pasos alcanzado
+
+COMPROBACIONES
+Bordes constantes:      OK
+Temperaturas en rango:  OK
+Residuo no creciente:   OK
+Resultado global:       OK
+

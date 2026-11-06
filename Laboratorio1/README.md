@@ -14,15 +14,17 @@ Laboratorio1/
 │   ├── graficas_lab1.py          # Gráficas de los ejercicios 3 a 6
 │   └── analisis_lab1.py          # Tablas derivadas de los CSV (texto y Markdown)
 ├── scripts/
+│   ├── ejecutar_ej1.sh              # Ejercicio 1: compila, entorno, tiempos, pruebas y gráfica
 │   ├── ejecutar_ej2_en_adelante.sh  # Ejercicios 2 a 6: compila, mide, grafica y registra
 │   ├── ejecutar_ej3.sh              # Solo el Ejercicio 3 (las dos mallas en la misma sesión)
-│   └── ejecutar_todo.sh             # Ejercicio 1 + llamada al guion de los ejercicios 2 a 6
+│   └── ejecutar_todo.sh             # Los dos primeros guiones, uno tras otro
 ├── bin/                          # Ejecutables
 ├── resultados/
-│   ├── ejercicio1/               # Ejercicio 1
+│   ├── entorno.txt, compilacion.txt          # Entorno y compilación del Ejercicio 1
+│   ├── ejercicio1/               # Ejercicio 1 (+ i7-1355U_2026-10-14/, primera medida)
 │   ├── ejercicio2 … ejercicio6/  # CSV en bruto y gráficas de los ejercicios 2 a 6
 │   ├── salidas_ejercicios_2_en_adelante.txt  # TODAS las salidas de consola desde el Ej. 2
-│   ├── ultra5-225U_2026-10-15/   # Medidas anteriores de los Ej. 2–6 en otra máquina (archivo)
+│   ├── ultra5-225U_2026-10-15/   # Medidas anteriores de los Ej. 1–6 en otra máquina (archivo)
 │   └── descartadas_2026-10-15/   # Medidas descartadas (CPU lenta)
 └── docs/
     ├── ejercicios_2_a_6.md       # Condiciones, mapa requisito → evidencia y resultados clave
@@ -62,20 +64,22 @@ evidencia de cada requisito del enunciado y los resultados clave.
 
 ## Ejercicio 1 y `ejecutar_todo.sh`
 
-`bash scripts/ejecutar_todo.sh` repite también el Ejercicio 1 (sobrescribe sus
-resultados y `resultados/entorno.txt`) y después llama al guion de los ejercicios
-2 a 6. Los datos de `resultados/ejercicio1/i7-1355U_2026-10-14/` son de la primera
-medida en otra máquina y no se mezclan con el resto.
+`bash Laboratorio1/scripts/ejecutar_ej1.sh` repite solo el Ejercicio 1, en unos 3
+minutos. Sobrescribe sus resultados, `resultados/entorno.txt` y
+`resultados/compilacion.txt`. `bash Laboratorio1/scripts/ejecutar_todo.sh` ejecuta
+ese guion y después el de los ejercicios 2 a 6.
 
 ## Máquinas
 
-- Ejercicio 1 (`resultados/ejercicio1/`, entorno en `resultados/entorno.txt`):
-  Intel Core Ultra 5 225U. Primera medida en Intel Core i7-1355U en
-  `resultados/ejercicio1/i7-1355U_2026-10-14/`.
-- Ejercicios 2 a 6 (`resultados/ejercicio2` … `ejercicio6`): Intel Core i7-1355U
-  (10 núcleos, 12 hilos lógicos) con Ubuntu 24.04 sobre WSL2, medidos el
-  2026-11-06. El entorno completo está al principio de
+Todo el laboratorio está medido en el mismo equipo: un Intel Core i7-1355U (10
+núcleos, 12 hilos lógicos) con Ubuntu 24.04 sobre WSL2.
+
+- Ejercicio 1 (`resultados/ejercicio1/`): medido el 2026-11-06; entorno en
+  `resultados/entorno.txt`. La primera medida en este mismo equipo (2026-10-14)
+  está en `resultados/ejercicio1/i7-1355U_2026-10-14/`.
+- Ejercicios 2 a 6 (`resultados/ejercicio2` … `ejercicio6`): medidos el
+  2026-11-06 en una sola sesión. El entorno completo está al principio de
   `resultados/salidas_ejercicios_2_en_adelante.txt`.
-- Las medidas anteriores de los ejercicios 2 a 6 (Intel Core Ultra 5 225U,
-  2026-10-15) se conservan en `resultados/ultra5-225U_2026-10-15/`; su `LEEME.md`
-  explica por qué no se mezclan.
+- Las medidas anteriores de los ejercicios 1 a 6 en otra máquina (Intel Core
+  Ultra 5 225U, 2026-10-15) se conservan en `resultados/ultra5-225U_2026-10-15/`;
+  su `LEEME.md` explica por qué no se mezclan.

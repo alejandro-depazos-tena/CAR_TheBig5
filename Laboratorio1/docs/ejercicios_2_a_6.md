@@ -6,8 +6,11 @@ y los números clave. Todos los números salen de los CSV de `resultados/` y de
 `resultados/salidas_ejercicios_2_en_adelante.txt`. Las tablas completas, generadas
 desde los CSV sin intervención manual, están en `docs/tablas_ej2_ej6.md`.
 
-El Ejercicio 1 ya estaba completado (`src/ejercicio1/`, `resultados/ejercicio1/`) y
-no se ha tocado.
+El código del Ejercicio 1 (`src/ejercicio1/`) no ha cambiado. Sus resultados
+(`resultados/ejercicio1/`) se volvieron a medir en esta misma máquina el
+2026-11-06 con `scripts/ejecutar_ej1.sh`, para que todo el laboratorio esté medido
+en el mismo equipo. La medida anterior, hecha en otra máquina, está archivada en
+`resultados/ultra5-225U_2026-10-15/`.
 
 ## 1. Cómo se reproduce
 
@@ -154,11 +157,17 @@ cuyo título empieza por esa etiqueta.
   `grafica_debil.png`).
 - Memoria (hasta 402,7 MB con N=5017): el coste secuencial por celda y paso está
   entre 1,16 y 1,40 ns para todas las N, sin tendencia con el tamaño, salvo
-  **N=4096 (1,93 ns)**. Lo de N=4096
-  no es ruido: sale igual en las 5 rondas (9,7–13,4 s), y el Ejercicio 1 ya lo
-  midió en esta máquina (`resultados/ejercicio1/i7-1355U_2026-10-14/`: 3,66 ns
-  con N=4096 frente a 2,22 ns con N=2048). Es una propiedad de N=4096 (potencia
-  de 2, filas de 32 KB), no del tamaño total.
+  **N=4096 (1,93 ns)**, que en esta sesión salió lento en las 5 rondas
+  (9,7–13,4 s). No es un efecto del tamaño total: N=4579 y N=5017, mayores,
+  vuelven a 1,19 y 1,30 ns. La causa no queda establecida con los datos
+  disponibles:
+  - La medida del Ejercicio 1 del 2026-10-14 en esta máquina
+    (`resultados/ejercicio1/i7-1355U_2026-10-14/`) también fue más lenta con
+    N=4096: 3,66 ns frente a 2,22 ns con N=2048.
+  - La repetición del Ejercicio 1 del 2026-11-06 (`resultados/ejercicio1/`) no
+    lo muestra: 2,16 ns frente a 2,22 ns. Ese programa calcula el paso y el
+    residuo en dos recorridos.
+  - Si la memoria lo comenta, debe presentarlo como una observación abierta.
 
 ### Ejercicio 5 · planificaciones (N=2048, 300 pasos)
 

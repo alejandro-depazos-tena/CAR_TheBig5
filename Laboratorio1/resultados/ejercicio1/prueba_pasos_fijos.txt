@@ -7,7 +7,7 @@ Pasos ejecutados:       300
 Tolerancia configurada: 1e-06 (no se aplica en modo medida)
 Residuo final:          0.0806443270516
 Checksum interior:      464885.42829014314
-Tiempo de ejecución:    0.120874300 s
+Tiempo de ejecución:    0.113564961 s
 Motivo de parada:       Límite de pasos alcanzado
 
 COMPROBACIONES
