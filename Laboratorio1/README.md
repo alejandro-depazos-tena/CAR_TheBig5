@@ -21,11 +21,9 @@ Laboratorio1/
 ├── bin/                          # Ejecutables
 ├── resultados/
 │   ├── entorno.txt, compilacion.txt          # Entorno y compilación del Ejercicio 1
-│   ├── ejercicio1/               # Ejercicio 1 (+ i7-1355U_2026-10-14/, primera medida)
+│   ├── ejercicio1/               # Ejercicio 1
 │   ├── ejercicio2 … ejercicio6/  # CSV en bruto y gráficas de los ejercicios 2 a 6
-│   ├── salidas_ejercicios_2_en_adelante.txt  # TODAS las salidas de consola desde el Ej. 2
-│   ├── ultra5-225U_2026-10-15/   # Medidas anteriores de los Ej. 1–6 en otra máquina (archivo)
-│   └── descartadas_2026-10-15/   # Medidas descartadas (CPU lenta)
+│   └── salidas_ejercicios_2_en_adelante.txt  # TODAS las salidas de consola desde el Ej. 2
 └── docs/
     ├── ejercicios_2_a_6.md       # Condiciones, mapa requisito → evidencia y resultados clave
     └── tablas_ej2_ej6.md         # Tablas derivadas, generadas desde los CSV
@@ -75,11 +73,15 @@ Todo el laboratorio está medido en el mismo equipo: un Intel Core i7-1355U (10
 núcleos, 12 hilos lógicos) con Ubuntu 24.04 sobre WSL2.
 
 - Ejercicio 1 (`resultados/ejercicio1/`): medido el 2026-11-06; entorno en
-  `resultados/entorno.txt`. La primera medida en este mismo equipo (2026-10-14)
-  está en `resultados/ejercicio1/i7-1355U_2026-10-14/`.
+  `resultados/entorno.txt`.
 - Ejercicios 2 a 6 (`resultados/ejercicio2` … `ejercicio6`): medidos el
   2026-11-06 en una sola sesión. El entorno completo está al principio de
   `resultados/salidas_ejercicios_2_en_adelante.txt`.
-- Las medidas anteriores de los ejercicios 1 a 6 en otra máquina (Intel Core
-  Ultra 5 225U, 2026-10-15) se conservan en `resultados/ultra5-225U_2026-10-15/`;
-  su `LEEME.md` explica por qué no se mezclan.
+- Las medidas anteriores ya no están en el repositorio, pero se conservan en el
+  historial de git:
+  - La primera medida del Ejercicio 1 en este equipo (2026-10-14), en el commit
+    `d900afa`, carpeta `resultados/ejercicio1/i7-1355U_2026-10-14/`.
+  - Las de los ejercicios 1 a 6 en otra máquina (Intel Core Ultra 5 225U,
+    2026-10-15), en el mismo commit, carpeta `resultados/ultra5-225U_2026-10-15/`.
+  - Se recuperan, por ejemplo, con
+    `git checkout d900afa -- Laboratorio1/resultados/ultra5-225U_2026-10-15`.

@@ -9,8 +9,9 @@ desde los CSV sin intervención manual, están en `docs/tablas_ej2_ej6.md`.
 El código del Ejercicio 1 (`src/ejercicio1/`) no ha cambiado. Sus resultados
 (`resultados/ejercicio1/`) se volvieron a medir en esta misma máquina el
 2026-11-06 con `scripts/ejecutar_ej1.sh`, para que todo el laboratorio esté medido
-en el mismo equipo. La medida anterior, hecha en otra máquina, está archivada en
-`resultados/ultra5-225U_2026-10-15/`.
+en el mismo equipo. La medida anterior, hecha en otra máquina, ya no está en el
+repositorio; se conserva en el historial de git (commit `d900afa`, carpeta
+`resultados/ultra5-225U_2026-10-15/`).
 
 ## 1. Cómo se reproduce
 
@@ -161,9 +162,10 @@ cuyo título empieza por esa etiqueta.
   (9,7–13,4 s). No es un efecto del tamaño total: N=4579 y N=5017, mayores,
   vuelven a 1,19 y 1,30 ns. La causa no queda establecida con los datos
   disponibles:
-  - La medida del Ejercicio 1 del 2026-10-14 en esta máquina
-    (`resultados/ejercicio1/i7-1355U_2026-10-14/`) también fue más lenta con
-    N=4096: 3,66 ns frente a 2,22 ns con N=2048.
+  - La medida del Ejercicio 1 del 2026-10-14 en esta máquina también fue más
+    lenta con N=4096: 3,66 ns frente a 2,22 ns con N=2048. Esos ficheros ya no
+    están en el repositorio; se conservan en el historial de git (commit
+    `d900afa`, carpeta `resultados/ejercicio1/i7-1355U_2026-10-14/`).
   - La repetición del Ejercicio 1 del 2026-11-06 (`resultados/ejercicio1/`) no
     lo muestra: 2,16 ns frente a 2,22 ns. Ese programa calcula el paso y el
     residuo en dos recorridos.
