@@ -6,6 +6,18 @@
  * Salida CSV: una fila por numero de hilos. Criterio: MINIMO de las
  * repeticiones; la inicializacion va dentro del bucle de repeticiones y
  * fuera del cronometro.
+ * Las repeticiones van en RONDAS INTERCALADAS: cada ronda mide una vez la
+ * secuencial y, despues, cada numero de hilos (con su techo y su paso vacio).
+ * En un portatil la frecuencia de la CPU cambia durante minutos (limite de
+ * potencia, nucleos P y E); con las repeticiones seguidas, una racha lenta
+ * cae sobre todas las de un mismo punto y el minimo no la filtra. Intercaladas,
+ * cada punto tiene una repeticion en cada ronda. tiempo_peor_s es el maximo de
+ * las rondas: la diferencia con el minimo es la dispersion de ese punto.
+ * T1 (speedup ABSOLUTO) es la version secuencial sin pragmas (minimo de las
+ * rondas). speedup_rel es el RELATIVO (frente a la version paralela con 1
+ * hilo) y va etiquetado aparte.
+ * Al final de cada ronda sale su resumen por stderr: si la ejecucion se
+ * corta, lo medido hasta ahi no se pierde. La tabla va a stdout al final.
  */
 #include <math.h>
 #include <omp.h>
@@ -164,41 +176,67 @@ int main(int argc, char **argv)
     }
     omp_set_dynamic(0);
 
-    /* T1 para el speedup ABSOLUTO: version secuencial, sin pragmas. */
-    double cs_seq, res_seq;
-    double t_seq = mide(a, b, n, steps, reps, 0, &cs_seq, &res_seq);
+    double sink = 0.0, cs_seq = 0.0, res_seq = 0.0;
+    double t_seq = 1e30, t_seq_peor = 0.0;
+    int seq_igual = 1;
+    int reales[NUM_HILOS], cs_ok[NUM_HILOS];
+    double t[NUM_HILOS], t_peor[NUM_HILOS], t_techo[NUM_HILOS], techo[NUM_HILOS],
+           region[NUM_HILOS];
+    for (size_t q = 0; q < NUM_HILOS; ++q) {
+        cs_ok[q] = 1;
+        t[q] = t_techo[q] = region[q] = 1e30;
+        t_peor[q] = 0.0;
+    }
 
-    double sink = 0.0, t_techo1 = 0.0;
-    printf("# N=%zu pasos=%zu repeticiones=%d criterio=minimo T1_secuencial=%.9f "
-           "residuo=%.17g\n", n, steps, reps, t_seq, res_seq);
+    for (int ronda = 0; ronda < reps; ++ronda) {
+        /* T1 para el speedup ABSOLUTO: version secuencial, sin pragmas. */
+        double cs, res;
+        double ts = mide(a, b, n, steps, 1, 0, &cs, &res);
+        if (ronda == 0) { cs_seq = cs; res_seq = res; }
+        seq_igual &= cs == cs_seq && res == res_seq;
+        if (ts < t_seq) t_seq = ts;
+        if (ts > t_seq_peor) t_seq_peor = ts;
+        fprintf(stderr, "[ronda %d/%d] T1=%.6f", ronda + 1, reps, ts);
+
+        for (size_t q = 0; q < NUM_HILOS; ++q) {
+            int p = HILOS[q];
+            omp_set_num_threads(p);
+            reales[q] = hilos_reales();
+
+            double tp = mide(a, b, n, steps, 1, 1, &cs, &res);
+            /* El maximo no depende del orden: el residuo debe coincidir exacto. */
+            cs_ok[q] &= fabs(cs - cs_seq) <= 1e-9 * fabs(cs_seq) && res == res_seq;
+            if (tp < t[q]) t[q] = tp;
+            if (tp > t_peor[q]) t_peor[q] = tp;
+
+            double tt = mide_techo(1, &sink);
+            if (tt < t_techo[q]) t_techo[q] = tt;
+
+            double rv = mide_region_vacia(n, 1);
+            if (rv < region[q]) region[q] = rv;
+            fprintf(stderr, " p%d=%.6f", p, tp);
+        }
+        fprintf(stderr, "\n");
+    }
+    /* p hilos hacen p veces el trabajo de uno: techo = p*T1/Tp. */
+    for (size_t q = 0; q < NUM_HILOS; ++q)
+        techo[q] = HILOS[q] * t_techo[0] / t_techo[q];
+
+    printf("# N=%zu pasos=%zu repeticiones=%d rondas=intercaladas criterio=minimo "
+           "T1_secuencial=%.9f T1_peor=%.9f residuo=%.17g\n", n, steps, reps, t_seq,
+           t_seq_peor, res_seq);
     printf("hilos,hilos_reales,N,pasos,tiempo_s,speedup_abs,eficiencia,"
            "s_por_paso,checksum_ok,tiempo_techo_s,techo_speedup,"
-           "region_vacia_s\n");
+           "region_vacia_s,speedup_rel,tiempo_peor_s\n");
     for (size_t q = 0; q < NUM_HILOS; ++q) {
         int p = HILOS[q];
-        omp_set_num_threads(p);
-        int reales = hilos_reales();
-
-        double cs, res;
-        double t = mide(a, b, n, steps, reps, 1, &cs, &res);
-        /* El maximo no depende del orden: el residuo debe coincidir exacto. */
-        int cs_ok = fabs(cs - cs_seq) <= 1e-9 * fabs(cs_seq) && res == res_seq;
-
-        double t_techo = mide_techo(reps, &sink);
-        if (p == 1) t_techo1 = t_techo;
-        /* p hilos hacen p veces el trabajo de uno: techo = p*T1/Tp. */
-        double techo = p * t_techo1 / t_techo;
-
-        double region = mide_region_vacia(n, reps);
-
-        printf("%d,%d,%zu,%zu,%.9f,%.4f,%.4f,%.6e,%d,%.6f,%.4f,%.6e\n", p, reales,
-               n, steps, t, t_seq / t, t_seq / (t * p), t / steps, cs_ok, t_techo,
-               techo, region);
-        /* Volcar cada fila al momento: si la ejecucion se corta, lo medido
-         * hasta ahi no se pierde (stdout a fichero va con buffer completo). */
-        fflush(stdout);
+        printf("%d,%d,%zu,%zu,%.9f,%.4f,%.4f,%.6e,%d,%.6f,%.4f,%.6e,%.4f,%.9f\n", p,
+               reales[q], n, steps, t[q], t_seq / t[q], t_seq / (t[q] * p),
+               t[q] / steps, cs_ok[q], t_techo[q], techo[q], region[q],
+               t[0] / t[q], t_peor[q]);
     }
-    fprintf(stderr, "(sumidero del techo: %g)\n", sink);
+    fprintf(stderr, "(sumidero del techo: %g; secuencial identica en todas las "
+            "rondas: %s)\n", sink, seq_igual ? "si" : "NO");
     free(a); free(b);
-    return EXIT_SUCCESS;
+    return seq_igual ? EXIT_SUCCESS : EXIT_FAILURE;
 }

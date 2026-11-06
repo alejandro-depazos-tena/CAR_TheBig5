@@ -1,0 +1,870 @@
+LABORATORIO 1 · TermoHPC I — SALIDAS DE CONSOLA DESDE EL EJERCICIO 2
+Generado por scripts/ejecutar_ej2_en_adelante.sh (repeticiones=5) el 2026-11-06 17:34:29 +0100.
+El Ejercicio 1 ya estaba completado (codigo en src/ejercicio1/, resultados en
+resultados/ejercicio1/) y no se incluye ni se vuelve a ejecutar aqui.
+Convenciones: '$ orden' es la orden ejecutada desde Laboratorio1/; debajo va su
+salida literal (stdout y, tras [stderr], la salida de error). '[codigo de salida]'
+da el codigo y los segundos que tardo. Cada apartado indica el requisito del
+enunciado al que responde. Criterio de todas las tablas de tiempos: MINIMO de
+las repeticiones; la inicializacion queda fuera del cronometro.
+
+########################################################################
+# 0. Entorno de la sesion (maquina, sistema, compilador)
+########################################################################
+$ date '+%F %T %z'
+2026-11-06 17:34:29 +0100
+[codigo de salida: 0 · 0 s]
+$ uname -srvmo
+Linux 6.6.87.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun  5 18:30:46 UTC 2025 x86_64 GNU/Linux
+[codigo de salida: 0 · 0 s]
+$ grep PRETTY_NAME /etc/os-release
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+[codigo de salida: 0 · 0 s]
+$ lscpu
+Architecture:                         x86_64
+CPU op-mode(s):                       32-bit, 64-bit
+Address sizes:                        39 bits physical, 48 bits virtual
+Byte Order:                           Little Endian
+CPU(s):                               12
+On-line CPU(s) list:                  0-11
+Vendor ID:                            GenuineIntel
+Model name:                           13th Gen Intel(R) Core(TM) i7-1355U
+CPU family:                           6
+Model:                                186
+Thread(s) per core:                   2
+Core(s) per socket:                   6
+Socket(s):                            1
+Stepping:                             3
+BogoMIPS:                             5222.40
+Flags:                                fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize flush_l1d arch_capabilities
+Virtualization:                       VT-x
+Hypervisor vendor:                    Microsoft
+Virtualization type:                  full
+L1d cache:                            288 KiB (6 instances)
+L1i cache:                            192 KiB (6 instances)
+L2 cache:                             7.5 MiB (6 instances)
+L3 cache:                             12 MiB (1 instance)
+NUMA node(s):                         1
+NUMA node0 CPU(s):                    0-11
+Vulnerability Gather data sampling:   Not affected
+Vulnerability Itlb multihit:          Not affected
+Vulnerability L1tf:                   Not affected
+Vulnerability Mds:                    Not affected
+Vulnerability Meltdown:               Not affected
+Vulnerability Mmio stale data:        Not affected
+Vulnerability Reg file data sampling: Mitigation; Clear Register File
+Vulnerability Retbleed:               Mitigation; Enhanced IBRS
+Vulnerability Spec rstack overflow:   Not affected
+Vulnerability Spec store bypass:      Mitigation; Speculative Store Bypass disabled via prctl
+Vulnerability Spectre v1:             Mitigation; usercopy/swapgs barriers and __user pointer sanitization
+Vulnerability Spectre v2:             Mitigation; Enhanced / Automatic IBRS; IBPB conditional; RSB filling; PBRSB-eIBRS SW sequence; BHI BHI_DIS_S
+Vulnerability Srbds:                  Not affected
+Vulnerability Tsx async abort:        Not affected
+[codigo de salida: 0 · 1 s]
+$ lscpu -e
+CPU NODE SOCKET CORE L1d:L1i:L2:L3 ONLINE
+  0    0      0    0 0:0:0:0          yes
+  1    0      0    0 0:0:0:0          yes
+  2    0      0    1 1:1:1:0          yes
+  3    0      0    1 1:1:1:0          yes
+  4    0      0    2 2:2:2:0          yes
+  5    0      0    2 2:2:2:0          yes
+  6    0      0    3 3:3:3:0          yes
+  7    0      0    3 3:3:3:0          yes
+  8    0      0    4 4:4:4:0          yes
+  9    0      0    4 4:4:4:0          yes
+ 10    0      0    5 5:5:5:0          yes
+ 11    0      0    5 5:5:5:0          yes
+[codigo de salida: 0 · 0 s]
+$ free -h
+               total        used        free      shared  buff/cache   available
+Mem:           7.6Gi       1.5Gi       5.8Gi       3.5Mi       527Mi       6.2Gi
+Swap:          2.0Gi          0B       2.0Gi
+[codigo de salida: 0 · 0 s]
+$ nproc
+12
+[codigo de salida: 0 · 0 s]
+$ gcc --version
+gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+Copyright (C) 2023 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+[codigo de salida: 0 · 0 s]
+$ python3 --version
+Python 3.12.3
+[codigo de salida: 0 · 0 s]
+$ variables_omp
+(ninguna variable OMP_* fijada)
+[codigo de salida: 0 · 0 s]
+
+=== Anfitrion Windows (WSL2): procesador real y alimentacion ===
+$ info_windows
+Name                      : 13th Gen Intel(R) Core(TM) i7-1355U
+NumberOfCores             : 10
+NumberOfLogicalProcessors : 12
+MaxClockSpeed             : 1700
+BatteryStatus            : 2
+EstimatedChargeRemaining : 100
+GUID de plan de energía: 381b4222-f694-41f0-9685-ff5bb260df2e  (Equilibrado)
+Modo de energia con corriente (overlay AC): Equilibrado (predeterminado)
+(BatteryStatus: 2 = conectado a la corriente, 1 = descargando en bateria)
+[codigo de salida: 0 · 1 s]
+
+########################################################################
+# 1. Compilacion (Ejercicios 2 a 6, flags del apartado IV.A)
+########################################################################
+$ gcc -Wall -Wextra -O2 -std=c11 -fopenmp src/ejercicio2/p1_ej2.c -o bin/p1_ej2 -lm
+(sin avisos)
+$ gcc -Wall -Wextra -O2 -std=c11 -fopenmp src/ejercicio3/p1_ej3.c -o bin/p1_ej3 -lm
+(sin avisos)
+$ gcc -Wall -Wextra -O2 -std=c11 src/ejercicio3/p1_seq.c -o bin/p1_seq -lm
+(sin avisos)
+$ gcc -Wall -Wextra -O2 -std=c11 -fopenmp src/ejercicio4/p1_ej4.c -o bin/p1_ej4 -lm
+(sin avisos)
+$ gcc -Wall -Wextra -O2 -std=c11 -fopenmp src/ejercicio5/p1_ej5.c -o bin/p1_ej5 -lm
+(sin avisos)
+$ gcc -Wall -Wextra -O2 -std=c11 -fopenmp src/ejercicio6/p1_ej6.c -o bin/p1_ej6 -lm
+(sin avisos)
+$ gcc -Wall -Wextra -O2 -std=c11 -fopenmp src/ejercicio6/p1_stream.c -o bin/p1_stream -lm
+(sin avisos)
+RESULTADO: todo compila sin errores y sin avisos con -Wall -Wextra.
+$ sh -c 'ldd bin/p1_seq | grep -c gomp || true'
+0
+[codigo de salida: 0 · 0 s]
+(0 = bin/p1_seq no enlaza libgomp: es la secuencial compilada sin -fopenmp)
+Repeticiones: 5 por punto, en RONDAS INTERCALADAS dentro de cada programa
+(cada ronda mide una vez todas las configuraciones de la tabla, para que una
+racha lenta de la maquina no caiga sobre todas las repeticiones de un punto).
+
+########################################################################
+# EJERCICIO 2 · Paralelizacion con OpenMP y verificacion numerica
+########################################################################
+
+=== Ej2 [PROG] Tabla de verificacion con 1, 2, 4, 8, 12, 16, 20 y 24 hilos (N=2048, 300 pasos): diferencia maxima celda a celda y checksum frente a la secuencial; columna hilos_reales = comprobacion obligatoria del apartado IV.D. Filas tipo=in_situ: [PROG] fallo provocado (un solo buffer), dos ejecuciones por recuento de hilos ===
+$ bin/p1_ej2 2048 300 > resultados/ejercicio2/verificacion_2048.csv
+# N=2048 pasos=300 tolerancia=1e-09
+tipo,hilos_pedidos,hilos_reales,max_diff,checksum,dif_checksum_rel,residuo,bit_a_bit,correcto,ejecucion
+secuencial,1,1,0,1890947.6669302983,0,0.080644327051587084,1,1,1
+jacobi_omp,1,1,0.000e+00,1890947.6669302983,0.000e+00,0.080644327051587084,1,1,1
+jacobi_omp,2,2,0.000e+00,1890947.6669302983,0.000e+00,0.080644327051587084,1,1,1
+jacobi_omp,4,4,0.000e+00,1890947.6669302983,0.000e+00,0.080644327051587084,1,1,1
+jacobi_omp,8,8,0.000e+00,1890947.6669302983,0.000e+00,0.080644327051587084,1,1,1
+jacobi_omp,12,12,0.000e+00,1890947.6669302983,0.000e+00,0.080644327051587084,1,1,1
+jacobi_omp,16,16,0.000e+00,1890947.6669302983,0.000e+00,0.080644327051587084,1,1,1
+jacobi_omp,20,20,0.000e+00,1890947.6669302983,0.000e+00,0.080644327051587084,1,1,1
+jacobi_omp,24,24,0.000e+00,1890947.6669302983,0.000e+00,0.080644327051587084,1,1,1
+in_situ,1,1,1.709e+01,2757088.6260519819,4.580e-01,NA,0,0,1
+in_situ,1,1,1.709e+01,2757088.6260519819,4.580e-01,NA,0,0,2
+in_situ,2,2,1.709e+01,2757088.6260519819,4.580e-01,NA,0,0,1
+in_situ,2,2,1.709e+01,2757088.6260519819,4.580e-01,NA,0,0,2
+in_situ,4,4,1.709e+01,2757088.6260519819,4.580e-01,NA,0,0,1
+in_situ,4,4,1.709e+01,2757088.6260519819,4.580e-01,NA,0,0,2
+in_situ,8,8,1.709e+01,2757088.6260519819,4.580e-01,NA,0,0,1
+in_situ,8,8,1.709e+01,2757088.6260519819,4.580e-01,NA,0,0,2
+in_situ,12,12,1.709e+01,2757088.6260519819,4.580e-01,NA,0,0,1
+in_situ,12,12,1.709e+01,2757088.6260519819,4.580e-01,NA,0,0,2
+in_situ,16,16,1.709e+01,2757088.6260519517,4.580e-01,NA,0,0,1
+in_situ,16,16,1.709e+01,2757088.6260519428,4.580e-01,NA,0,0,2
+in_situ,20,20,1.709e+01,2757088.6249166471,4.580e-01,NA,0,0,1
+in_situ,20,20,1.709e+01,2757088.6248872746,4.580e-01,NA,0,0,2
+in_situ,24,24,1.709e+01,2757088.5351495906,4.580e-01,NA,0,0,1
+in_situ,24,24,1.709e+01,2757088.5446903012,4.580e-01,NA,0,0,2
+# verificacion Jacobi paralelo: PASA
+[codigo de salida: 0 · 43 s]
+
+=== Ej2 [PROG] La misma tabla con N=256, 300 pasos: con malla pequena el calor llega a las fronteras entre franjas y el fallo in situ cambia ya desde pocos hilos ===
+$ bin/p1_ej2 256 300 > resultados/ejercicio2/verificacion_256.csv
+# N=256 pasos=300 tolerancia=1e-09
+tipo,hilos_pedidos,hilos_reales,max_diff,checksum,dif_checksum_rel,residuo,bit_a_bit,correcto,ejecucion
+secuencial,1,1,0,227208.38851639253,0,0.080644327051587084,1,1,1
+jacobi_omp,1,1,0.000e+00,227208.38851639253,0.000e+00,0.080644327051587084,1,1,1
+jacobi_omp,2,2,0.000e+00,227208.38851639253,0.000e+00,0.080644327051587084,1,1,1
+jacobi_omp,4,4,0.000e+00,227208.38851639253,0.000e+00,0.080644327051587084,1,1,1
+jacobi_omp,8,8,0.000e+00,227208.38851639253,0.000e+00,0.080644327051587084,1,1,1
+jacobi_omp,12,12,0.000e+00,227208.38851639253,0.000e+00,0.080644327051587084,1,1,1
+jacobi_omp,16,16,0.000e+00,227208.38851639253,0.000e+00,0.080644327051587084,1,1,1
+jacobi_omp,20,20,0.000e+00,227208.38851639253,0.000e+00,0.080644327051587084,1,1,1
+jacobi_omp,24,24,0.000e+00,227208.38851639253,0.000e+00,0.080644327051587084,1,1,1
+in_situ,1,1,1.709e+01,326159.9175717709,4.355e-01,NA,0,0,1
+in_situ,1,1,1.709e+01,326159.9175717709,4.355e-01,NA,0,0,2
+in_situ,2,2,1.709e+01,326159.91757166851,4.355e-01,NA,0,0,1
+in_situ,2,2,1.709e+01,326159.91757166851,4.355e-01,NA,0,0,2
+in_situ,4,4,1.709e+01,326158.94022618054,4.355e-01,NA,0,0,1
+in_situ,4,4,1.709e+01,326158.91335287696,4.355e-01,NA,0,0,2
+in_situ,8,8,1.709e+01,326061.18153463252,4.351e-01,NA,0,0,1
+in_situ,8,8,1.709e+01,326061.18153463252,4.351e-01,NA,0,0,2
+in_situ,12,12,1.706e+01,325717.67117864446,4.336e-01,NA,0,0,1
+in_situ,12,12,1.707e+01,325757.41343242401,4.337e-01,NA,0,0,2
+in_situ,16,16,1.705e+01,325619.74589581066,4.331e-01,NA,0,0,1
+in_situ,16,16,1.707e+01,325678.13661242684,4.334e-01,NA,0,0,2
+in_situ,20,20,1.700e+01,325541.86367609765,4.328e-01,NA,0,0,1
+in_situ,20,20,1.699e+01,325496.58197262208,4.326e-01,NA,0,0,2
+in_situ,24,24,1.701e+01,325546.17134625604,4.328e-01,NA,0,0,1
+in_situ,24,24,1.699e+01,325353.48056008614,4.320e-01,NA,0,0,2
+# verificacion Jacobi paralelo: PASA
+[codigo de salida: 0 · 4 s]
+
+=== Ej2 · Resumen de la verificacion calculado de los dos CSV anteriores ===
+$ python3 src/analisis_lab1.py ej2
+
+--- Ejercicio 2 · verificación numérica (tolerancia 1e-9, declarada antes de medir) ---
+
+--- N=2048, 300 pasos (fichero verificacion_2048.csv) ---
+Jacobi OpenMP: 8/8 recuentos de hilos pasan la verificación; 8/8 salen idénticos bit a bit; hilos reales = pedidos en 8/8. Mayor diferencia celda a celda: 0.000e+00; mayor diferencia relativa del checksum: 0.000e+00; residuo idéntico al secuencial en 8/8.
+Fallo provocado (in situ): rechazado en 16/16 ejecuciones; 4 checksums distintos entre los 8 recuentos de hilos; las dos ejecuciones con los mismos hilos coinciden en 5/8.
+hilos  checksum in situ (1)  checksum in situ (2)  1 = 2  dif. rel. vs secuencial   max_diff  cambia vs p anterior
+-----  --------------------  --------------------  -----  -----------------------  ---------  --------------------
+    1    2757088.6260519819    2757088.6260519819     sí               4.5805e-01  1.709e+01                     -
+    2    2757088.6260519819    2757088.6260519819     sí               4.5805e-01  1.709e+01                    no
+    4    2757088.6260519819    2757088.6260519819     sí               4.5805e-01  1.709e+01                    no
+    8    2757088.6260519819    2757088.6260519819     sí               4.5805e-01  1.709e+01                    no
+   12    2757088.6260519819    2757088.6260519819     sí               4.5805e-01  1.709e+01                    no
+   16    2757088.6260519517    2757088.6260519428     no               4.5805e-01  1.709e+01                    sí
+   20    2757088.6249166471    2757088.6248872746     no               4.5805e-01  1.709e+01                    sí
+   24    2757088.5351495906    2757088.5446903012     no               4.5805e-01  1.709e+01                    sí
+
+--- N=256, 300 pasos (fichero verificacion_256.csv) ---
+Jacobi OpenMP: 8/8 recuentos de hilos pasan la verificación; 8/8 salen idénticos bit a bit; hilos reales = pedidos en 8/8. Mayor diferencia celda a celda: 0.000e+00; mayor diferencia relativa del checksum: 0.000e+00; residuo idéntico al secuencial en 8/8.
+Fallo provocado (in situ): rechazado en 16/16 ejecuciones; 8 checksums distintos entre los 8 recuentos de hilos; las dos ejecuciones con los mismos hilos coinciden en 3/8.
+hilos  checksum in situ (1)  checksum in situ (2)  1 = 2  dif. rel. vs secuencial   max_diff  cambia vs p anterior
+-----  --------------------  --------------------  -----  -----------------------  ---------  --------------------
+    1     326159.9175717709     326159.9175717709     sí               4.3551e-01  1.709e+01                     -
+    2    326159.91757166851    326159.91757166851     sí               4.3551e-01  1.709e+01                    sí
+    4    326158.94022618054    326158.91335287696     no               4.3551e-01  1.709e+01                    sí
+    8    326061.18153463252    326061.18153463252     sí               4.3508e-01  1.709e+01                    sí
+   12    325717.67117864446    325757.41343242401     no               4.3356e-01  1.706e+01                    sí
+   16    325619.74589581066    325678.13661242684     no               4.3313e-01  1.705e+01                    sí
+   20    325541.86367609765    325496.58197262208     no               4.3279e-01  1.700e+01                    sí
+   24    325546.17134625604    325353.48056008614     no               4.3281e-01  1.701e+01                    sí
+[codigo de salida: 0 · 0 s]
+
+########################################################################
+# EJERCICIO 3 · Escalabilidad fuerte
+########################################################################
+
+=== Ej3/Ej6 [PROG] Techo de ancho de banda de la maquina: STREAM triad, 3 x 40e6 double (960 MB), 10 repeticiones (apartado V.G; lo usan el Ej3 y el Ej6) ===
+$ bin/p1_stream 40000000 10 > resultados/ejercicio6/stream.csv
+# elementos=40000000 MB_totales=960 repeticiones=10 criterio=minimo
+hilos,hilos_reales,tiempo_s,GB_s_24B,GB_s_32B,comprobacion
+1,1,0.052659,18.23,24.31,7
+2,2,0.043786,21.92,29.23,7
+4,4,0.040614,23.64,31.52,7
+8,8,0.040462,23.73,31.63,7
+12,12,0.041654,23.05,30.73,7
+16,16,0.040760,23.55,31.40,7
+20,20,0.041084,23.37,31.16,7
+24,24,0.040787,23.54,31.38,7
+[codigo de salida: 0 · 5 s]
+
+=== Ej3 [PROG] T1 para el speedup ABSOLUTO: secuencial compilada SIN -fopenmp, N=2048, 300 pasos, 10 repeticiones (cada repeticion, minimo, mediana y maximo = dispersion de la maquina) ===
+$ bin/p1_seq 2048 300 10 > resultados/ejercicio3/t1_sin_openmp_2048.csv
+# Secuencial compilada sin -fopenmp. N=2048 pasos=300 repeticiones=10
+repeticion,tiempo_s
+1,2.091824792
+2,1.874237171
+3,1.898520679
+4,1.710109894
+5,1.855778356
+6,1.909082615
+7,1.798124255
+8,1.747373098
+9,1.826161298
+10,1.952680621
+# T1_minimo=1.710109894 T1_mediana=1.865007764 T1_maximo=2.091824792 dispersion_max_min=22.3% ns_por_celda_y_paso=1.3591 checksum=1890947.6669302983 residuo=0.080644327051587084
+[codigo de salida: 0 · 20 s]
+
+=== Ej3 [PROG] T1 sin -fopenmp para la malla pequena: N=256, 19200 pasos (256^2 x 19200 = 2048^2 x 300 celdas-paso) ===
+$ bin/p1_seq 256 19200 10 > resultados/ejercicio3/t1_sin_openmp_256.csv
+# Secuencial compilada sin -fopenmp. N=256 pasos=19200 repeticiones=10
+repeticion,tiempo_s
+1,1.533051662
+2,1.104500952
+3,1.322431457
+4,1.327731391
+5,1.310539682
+6,1.192916434
+7,1.116995197
+8,1.326104312
+9,1.188400580
+10,1.423839541
+# T1_minimo=1.104500952 T1_mediana=1.316485569 T1_maximo=1.533051662 dispersion_max_min=38.8% ns_por_celda_y_paso=0.8778 checksum=1363994.6229475697 residuo=0.00077284067753069507
+[codigo de salida: 0 · 13 s]
+
+=== Ej3 [PROG] Barrido 1..24 hilos, N=2048, 300 pasos, 5 repeticiones: tiempo, speedup absoluto (y relativo, etiquetado), eficiencia, hilos reales, [PROG] techo de calculo medido (apartado IV.C) y coste de un paso vacio (para el [RAZ] de la malla pequena) ===
+$ bin/p1_ej3 2048 300 5 > resultados/ejercicio3/fuerte_2048.csv
+# N=2048 pasos=300 repeticiones=5 rondas=intercaladas criterio=minimo T1_secuencial=1.967720270 T1_peor=2.343273575 residuo=0.080644327051587084
+hilos,hilos_reales,N,pasos,tiempo_s,speedup_abs,eficiencia,s_por_paso,checksum_ok,tiempo_techo_s,techo_speedup,region_vacia_s,speedup_rel,tiempo_peor_s
+1,1,2048,300,1.999041004,0.9843,0.9843,6.663470e-03,1,0.344317,1.0000,3.026920e-07,1.0000,2.203061573
+2,2,2048,300,1.346413555,1.4615,0.7307,4.488045e-03,1,0.356987,1.9290,5.536675e-07,1.4847,1.456685799
+4,4,2048,300,1.215985056,1.6182,0.4046,4.053284e-03,1,0.407836,3.3770,9.291250e-07,1.6440,1.264644526
+8,8,2048,300,0.963981362,2.0412,0.2552,3.213271e-03,1,0.404636,6.8074,1.159665e-06,2.0737,1.064216898
+12,12,2048,300,1.419260558,1.3864,0.1155,4.730869e-03,1,0.494320,8.3586,1.898724e-06,1.4085,1.816298328
+16,16,2048,300,1.206957998,1.6303,0.1019,4.023193e-03,1,0.625893,8.8019,4.598428e-04,1.6563,1.360747783
+20,20,2048,300,1.155158582,1.7034,0.0852,3.850529e-03,1,0.841011,8.1882,5.285985e-04,1.7305,1.272181437
+24,24,2048,300,1.158840306,1.6980,0.0708,3.862801e-03,1,0.960227,8.6059,5.441055e-04,1.7250,1.236959031
+[stderr]
+[ronda 1/5] T1=2.343274 p1=2.038177 p2=1.346414 p4=1.264645 p8=1.043381 p12=1.595522 p16=1.220719 p20=1.245526 p24=1.236959
+[ronda 2/5] T1=1.967720 p1=1.999041 p2=1.379977 p4=1.254522 p8=1.037667 p12=1.647129 p16=1.251697 p20=1.173380 p24=1.158840
+[ronda 3/5] T1=2.137771 p1=2.174735 p2=1.456686 p4=1.239018 p8=0.963981 p12=1.419261 p16=1.206958 p20=1.155159 p24=1.159894
+[ronda 4/5] T1=2.201000 p1=2.203062 p2=1.367060 p4=1.215985 p8=1.064217 p12=1.599443 p16=1.326615 p20=1.200200 p24=1.178815
+[ronda 5/5] T1=1.987924 p1=2.058767 p2=1.403620 p4=1.237763 p8=1.038632 p12=1.816298 p16=1.360748 p20=1.272181 p24=1.215168
+(sumidero del techo: 4.22093e+11; secuencial identica en todas las rondas: si)
+[codigo de salida: 0 · 123 s]
+
+=== Ej3 [PROG] Malla pequena: N=256, 19200 pasos (mismo trabajo total), 5 repeticiones ===
+$ bin/p1_ej3 256 19200 5 > resultados/ejercicio3/fuerte_256.csv
+# N=256 pasos=19200 repeticiones=5 rondas=intercaladas criterio=minimo T1_secuencial=1.068640850 T1_peor=1.439840865 residuo=0.00077284067753069507
+hilos,hilos_reales,N,pasos,tiempo_s,speedup_abs,eficiencia,s_por_paso,checksum_ok,tiempo_techo_s,techo_speedup,region_vacia_s,speedup_rel,tiempo_peor_s
+1,1,256,19200,1.085384333,0.9846,0.9846,5.653043e-05,1,0.262594,1.0000,1.405600e-07,1.0000,1.601612050
+2,2,256,19200,0.577061410,1.8519,0.9259,3.005528e-05,1,0.277100,1.8953,3.734975e-07,1.8809,1.091384930
+4,4,256,19200,0.348251472,3.0686,0.7671,1.813810e-05,1,0.298219,3.5222,7.011620e-07,3.1167,0.756562841
+8,8,256,19200,0.233686196,4.5730,0.5716,1.217116e-05,1,0.344592,6.0963,1.057886e-06,4.6446,0.407948492
+12,12,256,19200,30.638047349,0.0349,0.0029,1.595732e-03,1,0.430525,7.3193,1.038324e-05,0.0354,47.616456774
+16,16,256,19200,8.457479607,0.1264,0.0079,4.404937e-04,1,0.686293,6.1220,4.378730e-04,0.1283,9.886207202
+20,20,256,19200,9.828381331,0.1087,0.0054,5.118949e-04,1,0.797933,6.5819,5.104610e-04,0.1104,12.056799765
+24,24,256,19200,10.872517377,0.0983,0.0041,5.662769e-04,1,0.928796,6.7854,5.817553e-04,0.0998,13.972146030
+[stderr]
+[ronda 1/5] T1=1.068641 p1=1.085384 p2=0.577061 p4=0.348251 p8=0.233686 p12=32.245688 p16=8.457480 p20=9.828381 p24=10.872517
+[ronda 2/5] T1=1.157510 p1=1.164279 p2=0.661584 p4=0.423717 p8=0.299269 p12=30.638047 p16=8.810724 p20=11.637978 p24=13.972146
+[ronda 3/5] T1=1.234470 p1=1.601590 p2=1.091385 p4=0.756563 p8=0.407948 p12=47.616457 p16=9.886207 p20=10.970557 p24=12.692457
+[ronda 4/5] T1=1.379424 p1=1.394393 p2=0.627297 p4=0.386275 p8=0.281218 p12=40.046938 p16=9.421015 p20=12.056800 p24=12.894672
+[ronda 5/5] T1=1.439841 p1=1.601612 p2=0.776303 p4=0.477824 p8=0.275204 p12=33.069784 p16=9.331457 p20=11.558531 p24=12.946457
+(sumidero del techo: 4.22093e+11; secuencial identica en todas las rondas: si)
+[codigo de salida: 0 · 433 s]
+
+=== Ej3 · Tablas derivadas de los CSV: speedup absoluto/relativo, % del techo, Karp-Flatt, Amdahl, coste de paso vacio frente a tiempo por paso, ancho de banda frente a STREAM ===
+$ python3 src/analisis_lab1.py ej3
+
+--- Ejercicio 3 · escalabilidad fuerte ---
+
+--- N=2048, 300 pasos, mínimo de 5 repeticiones (fichero fuerte_2048.csv) ---
+T1 = 1.9677 s (versión secuencial sin pragmas en el mismo proceso, mínimo de las rondas; la peor ronda dio 2.3433 s). Binario compilado SIN -fopenmp (p1_seq): mínimo 1.7101 s, mediana 1.8650 s, máximo 2.0918 s (dispersión máx/mín 22.3%); la T1 de la tabla difiere de su mínimo un +15.1 %.
+Prueba de humo (V.I): T(1 hilo)/T1 = 1.016.
+hilos  reales   T (s)  peor/mejor  S abs  S rel   E abs  techo cálc.  S/techo  Karp-Flatt  ms/paso  paso vacío (µs)  vacío/paso  verif.
+-----  ------  ------  ----------  -----  -----  ------  -----------  -------  ----------  -------  ---------------  ----------  ------
+    1       1  1.9990        1.10  0.984  1.000  98.4 %         1.00   98.4 %           -   6.6635             0.30       0.0 %      sí
+    2       2  1.3464        1.08  1.462  1.485  73.1 %         1.93   75.8 %       0.368   4.4880             0.55       0.0 %      sí
+    4       4  1.2160        1.04  1.618  1.644  40.5 %         3.38   47.9 %       0.491   4.0533             0.93       0.0 %      sí
+    8       8  0.9640        1.10  2.041  2.074  25.5 %         6.81   30.0 %       0.417   3.2133             1.16       0.0 %      sí
+   12      12  1.4193        1.28  1.386  1.409  11.6 %         8.36   16.6 %       0.696   4.7309             1.90       0.0 %      sí
+   16      16  1.2070        1.13  1.630  1.656  10.2 %         8.80   18.5 %       0.588   4.0232           459.84      11.4 %      sí
+   20      20  1.1552        1.10  1.703  1.730   8.5 %         8.19   20.8 %       0.565   3.8505           528.60      13.7 %      sí
+   24      24  1.1588        1.07  1.698  1.725   7.1 %         8.61   19.7 %       0.571   3.8628           544.11      14.1 %      sí
+Speedup absoluto máximo: 2.041 con 8 hilos. Hilos lógicos de la máquina: 12 (por encima hay sobresuscripción).
+Amdahl: fracción serie ajustada por mínimos cuadrados con 2, 4, 8 hilos (menos que las 12 CPU lógicas): f = 0.436 (límite 1/f = 2.30). Compárese con la columna Karp-Flatt: si Amdahl describiera la curva, sería constante.
+hilos  S medido  S Amdahl con f ajustada
+-----  --------  -----------------------
+    1     0.984                    1.000
+    2     1.462                    1.393
+    4     1.618                    1.734
+    8     2.041                    1.976
+   12     1.386                    2.072
+   16     1.630                    2.124
+   20     1.703                    2.156
+   24     1.698                    2.178
+Techo de ancho de banda: la secuencial mueve 10.21 GB/s (16 B/celda) o 15.32 GB/s (24 B/celda, con la lectura previa de la línea escrita). STREAM: 1 hilo 18.23/24.31 GB/s, máximo 23.73/31.63 GB/s (modelos 24/32 B) con 8 hilos. Speedup máximo que permite la memoria si el programa estuviera limitado solo por ella: 31.63/15.32 = 2.06 (modelos con lectura previa) o 2.32 (modelos sin ella).
+hilos  GB/s (16 B)  % STREAM 24 B  GB/s (24 B)  % STREAM 32 B
+-----  -----------  -------------  -----------  -------------
+    1        10.05         42.4 %        15.08         47.7 %
+    2        14.92         62.9 %        22.39         70.8 %
+    4        16.52         69.6 %        24.79         78.4 %
+    8        20.84         87.8 %        31.27         98.8 %
+   12        14.16         59.7 %        21.24         67.1 %
+   16        16.65         70.2 %        24.97         79.0 %
+   20        17.39         73.3 %        26.09         82.5 %
+   24        17.34         73.1 %        26.01         82.2 %
+
+--- N=256, 19200 pasos, mínimo de 5 repeticiones (fichero fuerte_256.csv) ---
+T1 = 1.0686 s (versión secuencial sin pragmas en el mismo proceso, mínimo de las rondas; la peor ronda dio 1.4398 s). Binario compilado SIN -fopenmp (p1_seq): mínimo 1.1045 s, mediana 1.3165 s, máximo 1.5331 s (dispersión máx/mín 38.8%); la T1 de la tabla difiere de su mínimo un -3.2 %.
+Prueba de humo (V.I): T(1 hilo)/T1 = 1.016.
+hilos  reales    T (s)  peor/mejor  S abs  S rel   E abs  techo cálc.  S/techo  Karp-Flatt  ms/paso  paso vacío (µs)  vacío/paso  verif.
+-----  ------  -------  ----------  -----  -----  ------  -----------  -------  ----------  -------  ---------------  ----------  ------
+    1       1   1.0854        1.48  0.985  1.000  98.5 %         1.00   98.5 %           -   0.0565             0.14       0.2 %      sí
+    2       2   0.5771        1.89  1.852  1.881  92.6 %         1.90   97.7 %       0.080   0.0301             0.37       1.2 %      sí
+    4       4   0.3483        2.17  3.069  3.117  76.7 %         3.52   87.1 %       0.101   0.0181             0.70       3.9 %      sí
+    8       8   0.2337        1.75  4.573  4.645  57.2 %         6.10   75.0 %       0.107   0.0122             1.06       8.7 %      sí
+   12      12  30.6380        1.55  0.035  0.035   0.3 %         7.32    0.5 %      31.167   1.5957            10.38       0.7 %      sí
+   16      16   8.4575        1.17  0.126  0.128   0.8 %         6.12    2.1 %       8.372   0.4405           437.87      99.4 %      sí
+   20      20   9.8284        1.23  0.109  0.110   0.5 %         6.58    1.7 %       9.631   0.5119           510.46      99.7 %      sí
+   24      24  10.8725        1.29  0.098  0.100   0.4 %         6.79    1.4 %      10.572   0.5663           581.76     102.7 %      sí
+Speedup absoluto máximo: 4.573 con 8 hilos. Hilos lógicos de la máquina: 12 (por encima hay sobresuscripción).
+Amdahl: fracción serie ajustada por mínimos cuadrados con 2, 4, 8 hilos (menos que las 12 CPU lógicas): f = 0.101 (límite 1/f = 9.93). Compárese con la columna Karp-Flatt: si Amdahl describiera la curva, sería constante.
+hilos  S medido  S Amdahl con f ajustada
+-----  --------  -----------------------
+    1     0.985                    1.000
+    2     1.852                    1.817
+    4     3.069                    3.072
+    8     4.573                    4.693
+   12     0.035                    5.694
+   16     0.126                    6.374
+   20     0.109                    6.866
+   24     0.098                    7.239
+[codigo de salida: 0 · 0 s]
+
+########################################################################
+# EJERCICIO 4 · Escalabilidad debil
+########################################################################
+
+=== Ej4 [PROG] N(p) = round(1024 * sqrt(p)), 300 pasos, 5 repeticiones; cada N verificada contra la secuencial con la misma N ===
+$ bin/p1_ej4 1024 300 5 > resultados/ejercicio4/debil.csv
+# N1=1024 pasos=300 repeticiones=5 rondas=intercaladas criterio=minimo tolerancia=1e-09
+hilos,hilos_reales,N,celdas_por_hilo,pasos,tiempo_s,eficiencia_debil,MB_dos_buffers,checksum,tiempo_seq_mismo_N_s,ns_celda_paso_seq,speedup_abs_mismo_N,max_diff,dif_checksum_rel,correcto,tiempo_peor_s
+1,1,1024,1048576,300,0.382636784,1.0000,16.8,940239.50783734128,0.438762546,1.3948,1.1467,0.000e+00,0.000e+00,1,0.854494999
+2,2,1448,1048352,300,0.481030459,0.7955,33.5,1333892.1049613256,0.791859350,1.2589,1.6462,0.000e+00,0.000e+00,1,0.974516025
+4,4,2048,1048576,300,1.508209847,0.2537,67.1,1890947.6669302983,1.592508536,1.2656,1.0559,0.000e+00,0.000e+00,1,2.464741363
+8,8,2896,1048352,300,1.941050553,0.1971,134.2,2678252.8611797374,2.918531878,1.1600,1.5036,0.000e+00,0.000e+00,1,1.988238507
+12,12,3547,1048434,300,3.387314567,0.1130,201.3,3282658.1459158985,4.425816926,1.1726,1.3066,0.000e+00,0.000e+00,1,3.778513560
+16,16,4096,1048576,300,4.215411802,0.0908,268.4,3792363.9851164636,9.728988499,1.9330,2.3080,0.000e+00,0.000e+00,1,5.228587312
+20,20,4579,1048362,300,5.124914264,0.0747,335.5,4240793.7125171795,7.484098933,1.1898,1.4603,0.000e+00,0.000e+00,1,5.310738282
+24,24,5017,1048762,300,6.187744059,0.0618,402.7,4647444.2727542706,9.799906488,1.2978,1.5838,0.000e+00,0.000e+00,1,6.291285404
+# verificacion de todas las mallas: PASA
+[stderr]
+[ronda 1/5] N1024:p1=0.8545/sec=0.6823 N1448:p2=0.5843/sec=0.9983 N2048:p4=2.4647/sec=2.5575 N2896:p8=1.9882/sec=3.4420 N3547:p12=3.7785/sec=5.1346 N4096:p16=4.2524/sec=12.5668 N4579:p20=5.1662/sec=8.6439 N5017:p24=6.2913/sec=10.2403
+[ronda 2/5] N1024:p1=0.5629/sec=0.4476 N1448:p2=0.9745/sec=1.3056 N2048:p4=1.5082/sec=1.6447 N2896:p8=1.9411/sec=2.9185 N3547:p12=3.3873/sec=4.4258 N4096:p16=4.2154/sec=9.7290 N4579:p20=5.2894/sec=7.8618 N5017:p24=6.2466/sec=9.7999
+[ronda 3/5] N1024:p1=0.3826/sec=0.4436 N1448:p2=0.5665/sec=0.7919 N2048:p4=1.6782/sec=1.5925 N2896:p8=1.9566/sec=3.1103 N3547:p12=3.7511/sec=4.6539 N4096:p16=4.5762/sec=11.7032 N4579:p20=5.1249/sec=7.4841 N5017:p24=6.1877/sec=10.3691
+[ronda 4/5] N1024:p1=0.4289/sec=0.4388 N1448:p2=0.4810/sec=0.8838 N2048:p4=1.8090/sec=1.8416 N2896:p8=1.9763/sec=3.5085 N3547:p12=3.6995/sec=5.4258 N4096:p16=5.2286/sec=13.4484 N4579:p20=5.3107/sec=9.0959 N5017:p24=6.2759/sec=10.8648
+[ronda 5/5] N1024:p1=0.4282/sec=0.4496 N1448:p2=0.5643/sec=0.8331 N2048:p4=1.5090/sec=1.8163 N2896:p8=1.9648/sec=3.4793 N3547:p12=3.7515/sec=5.2207 N4096:p16=5.1860/sec=12.1166 N4579:p20=5.1690/sec=8.5747 N5017:p24=6.1990/sec=10.5764
+[codigo de salida: 0 · 355 s]
+
+=== Ej4 · Tablas derivadas: eficiencia debil, N exactos tras redondear, coste por celda frente al tamano de la malla ===
+$ python3 src/analisis_lab1.py ej4
+
+--- Ejercicio 4 · escalabilidad débil ---
+N1 = 1024, 300 pasos, mínimo de 5 repeticiones. N(p) = round(N1·√p). Eficiencia débil = T(1 hilo, N1)/T(p hilos, N(p)).
+hilos  reales     N  celdas/hilo  MB 2 buffers   T (s)  peor/mejor  E débil  T mín. memoria (s)  T / T mín.  T sec. mismo N (s)  ns/celda·paso sec.  S abs mismo N   max_diff  verif.
+-----  ------  ----  -----------  ------------  ------  ----------  -------  ------------------  ----------  ------------------  ------------------  -------------  ---------  ------
+    1       1  1024      1048576          16.8  0.3826        2.23  100.0 %              0.2378        1.61              0.4388               1.395          1.147  0.000e+00      sí
+    2       2  1448      1048352          33.5  0.4810        2.03   79.5 %              0.4760        1.01              0.7919               1.259          1.646  0.000e+00      sí
+    4       4  2048      1048576          67.1  1.5082        1.63   25.4 %              0.9529        1.58              1.5925               1.266          1.056  0.000e+00      sí
+    8       8  2896      1048352         134.2  1.9411        1.02   19.7 %              1.9065        1.02              2.9185               1.160          1.504  0.000e+00      sí
+   12      12  3547      1048434         201.3  3.3873        1.12   11.3 %              2.8607        1.18              4.4258               1.173          1.307  0.000e+00      sí
+   16      16  4096      1048576         268.4  4.2154        1.24    9.1 %              3.8153        1.10              9.7290               1.933          2.308  0.000e+00      sí
+   20      20  4579      1048362         335.5  5.1249        1.04    7.5 %              4.7686        1.07              7.4841               1.190          1.460  0.000e+00      sí
+   24      24  5017      1048762         402.7  6.1877        1.02    6.2 %              5.7250        1.08              9.7999               1.298          1.584  0.000e+00      sí
+T mín. memoria = 24 B × (N-2)² × pasos / 31.63 GB/s (máximo de STREAM con el mismo criterio de bytes reales): lo que tardaría el paso si solo lo limitara el ancho de banda de la máquina.
+Coste secuencial por celda y paso para N >= 2048 (dos buffers de 64 MB o más, fuera de cualquier caché de esta clase de máquina): mín 1.160, máx 1.933 ns (variación 66.6 %); N = 1024: 1.395 ns.
+Celdas por hilo tras redondear N: de 1048352 a 1048762 (desviación máxima 0.039 %).
+[codigo de salida: 0 · 0 s]
+
+########################################################################
+# EJERCICIO 5 · Comparacion de planificaciones
+########################################################################
+
+=== Ej5 [PROG] 12 hilos, N=2048, 300 pasos, 5 repeticiones: static sin trozo, static 1/4/16/64, dynamic 1/4/16/64 y guided; [PROG] cada una verificada contra la secuencial ===
+$ bin/p1_ej5 2048 300 12 5 > resultados/ejercicio5/planificaciones.csv
+# N=2048 pasos=300 hilos=12 hilos_reales=12 repeticiones=5 rondas=intercaladas criterio=minimo T1_secuencial=1.645606477 T1_peor=2.147785767 residuo=0.080644327051587084
+schedule,chunk,tiempo_s,speedup_abs,max_diff,correcto,tiempo_peor_s
+static,0,1.646691228,0.9993,0.000e+00,1,1.778443601
+static,1,1.776841517,0.9261,0.000e+00,1,1.896097161
+static,4,1.668988835,0.9860,0.000e+00,1,1.824322675
+static,16,1.601728666,1.0274,0.000e+00,1,2.294132909
+static,64,1.517439917,1.0845,0.000e+00,1,2.870875147
+dynamic,1,1.528196722,1.0768,0.000e+00,1,2.328987384
+dynamic,4,1.497481844,1.0989,0.000e+00,1,2.026961485
+dynamic,16,1.438539286,1.1439,0.000e+00,1,1.679794562
+dynamic,64,1.511208654,1.0889,0.000e+00,1,1.851418348
+guided,0,1.496349512,1.0997,0.000e+00,1,1.735917959
+# verificacion de todas las planificaciones: PASA
+[stderr]
+[ronda 1/5] T1=2.147786 static,0=1.709091 static,1=1.896097 static,4=1.728574 static,16=2.294133 static,64=1.622569 dynamic,1=1.528197 dynamic,4=1.517834 dynamic,16=1.679795 dynamic,64=1.523456 guided,0=1.636267
+[ronda 2/5] T1=1.773868 static,0=1.778444 static,1=1.858302 static,4=1.668989 static,16=1.970030 static,64=2.870875 dynamic,1=2.328987 dynamic,4=2.026961 dynamic,16=1.490676 dynamic,64=1.851418 guided,0=1.735918
+[ronda 3/5] T1=1.805277 static,0=1.705607 static,1=1.812967 static,4=1.813781 static,16=1.601729 static,64=1.610760 dynamic,1=1.599725 dynamic,4=1.497482 dynamic,16=1.484895 dynamic,64=1.644829 guided,0=1.496350
+[ronda 4/5] T1=1.732805 static,0=1.718659 static,1=1.776842 static,4=1.824323 static,16=1.915524 static,64=1.517440 dynamic,1=1.591978 dynamic,4=1.562835 dynamic,16=1.438539 dynamic,64=1.511209 guided,0=1.622618
+[ronda 5/5] T1=1.645606 static,0=1.646691 static,1=1.839219 static,4=1.691828 static,16=1.615345 static,64=1.619724 dynamic,1=1.597002 dynamic,4=1.512470 dynamic,16=1.496289 dynamic,64=1.541475 guided,0=1.511713
+[codigo de salida: 0 · 99 s]
+
+=== Ej5 · Medida complementaria (no pedida): las mismas planificaciones con 8 hilos. En esta maquina 12 hilos son TODAS las CPU logicas que ve WSL2, y el anfitrion Windows compite por ellas; con 8 queda margen ===
+$ bin/p1_ej5 2048 300 8 5 > resultados/ejercicio5/planificaciones_8hilos.csv
+# N=2048 pasos=300 hilos=8 hilos_reales=8 repeticiones=5 rondas=intercaladas criterio=minimo T1_secuencial=1.714730554 T1_peor=2.073424709 residuo=0.080644327051587084
+schedule,chunk,tiempo_s,speedup_abs,max_diff,correcto,tiempo_peor_s
+static,0,1.122787224,1.5272,0.000e+00,1,1.158737142
+static,1,1.136979233,1.5081,0.000e+00,1,1.196031631
+static,4,1.100432087,1.5582,0.000e+00,1,1.273457997
+static,16,1.068389650,1.6050,0.000e+00,1,1.134697516
+static,64,1.101536172,1.5567,0.000e+00,1,1.168969822
+dynamic,1,1.081370618,1.5857,0.000e+00,1,1.159233190
+dynamic,4,1.006083255,1.7044,0.000e+00,1,1.062073342
+dynamic,16,1.022168973,1.6775,0.000e+00,1,1.064829599
+dynamic,64,1.046858447,1.6380,0.000e+00,1,1.094955240
+guided,0,0.981263592,1.7475,0.000e+00,1,1.039253543
+# verificacion de todas las planificaciones: PASA
+[stderr]
+[ronda 1/5] T1=2.073425 static,0=1.130097 static,1=1.136979 static,4=1.105322 static,16=1.086877 static,64=1.117335 dynamic,1=1.090957 dynamic,4=1.006083 dynamic,16=1.028404 dynamic,64=1.046858 guided,0=0.981264
+[ronda 2/5] T1=1.764086 static,0=1.128669 static,1=1.149262 static,4=1.100432 static,16=1.068390 static,64=1.118544 dynamic,1=1.099219 dynamic,4=1.015195 dynamic,16=1.063661 dynamic,64=1.054465 guided,0=0.983625
+[ronda 3/5] T1=1.732082 static,0=1.122787 static,1=1.189114 static,4=1.124635 static,16=1.084888 static,64=1.107959 dynamic,1=1.081371 dynamic,4=1.022067 dynamic,16=1.022169 dynamic,64=1.063211 guided,0=1.000573
+[ronda 4/5] T1=1.786145 static,0=1.136163 static,1=1.196032 static,4=1.273458 static,16=1.077159 static,64=1.101536 dynamic,1=1.089262 dynamic,4=1.043696 dynamic,16=1.053440 dynamic,64=1.093799 guided,0=1.037570
+[ronda 5/5] T1=1.714731 static,0=1.158737 static,1=1.184553 static,4=1.139409 static,16=1.134698 static,64=1.168970 dynamic,1=1.159233 dynamic,4=1.062073 dynamic,16=1.064830 dynamic,64=1.094955 guided,0=1.039254
+[codigo de salida: 0 · 67 s]
+
+=== Ej5 · Tablas derivadas: orden, coste relativo y separacion de los efectos de entrelazar y de repartir bajo demanda ===
+$ python3 src/analisis_lab1.py ej5
+
+--- Ejercicio 5 · planificaciones ---
+
+--- configuración pedida: N=2048, 300 pasos, 12 hilos (reales 12), mínimo de 5 rondas (fichero planificaciones.csv) ---
+T1 = 1.6456 s (peor ronda 2.1478 s).
+planificación   T (s)  peor/mejor  S abs  T / T(static)  puesto   max_diff  verif.
+-------------  ------  ----------  -----  -------------  ------  ---------  ------
+       static  1.6467        1.08  0.999          1.000       8  0.000e+00      sí
+     static,1  1.7768        1.07  0.926          1.079      10  0.000e+00      sí
+     static,4  1.6690        1.09  0.986          1.014       9  0.000e+00      sí
+    static,16  1.6017        1.43  1.027          0.973       7  0.000e+00      sí
+    static,64  1.5174        1.89  1.085          0.922       5  0.000e+00      sí
+    dynamic,1  1.5282        1.52  1.077          0.928       6  0.000e+00      sí
+    dynamic,4  1.4975        1.35  1.099          0.909       3  0.000e+00      sí
+   dynamic,16  1.4385        1.17  1.144          0.874       1  0.000e+00      sí
+   dynamic,64  1.5112        1.23  1.089          0.918       4  0.000e+00      sí
+       guided  1.4963        1.16  1.100          0.909       2  0.000e+00      sí
+Más rápida: dynamic,16 (1.4385 s, 1.145 veces más rápida que static sin trozo).
+Separación de efectos, mismo trozo: T(static,c)/T(static) mide lo que cuesta entrelazar trozos de c filas sin gestión dinámica; T(dynamic,c)/T(static,c) mide lo que añade (o quita) repartir esos mismos trozos bajo demanda.
+trozo c (filas)  T(static,c)/T(static)  T(dynamic,c)/T(static,c)
+---------------  ---------------------  ------------------------
+              1                  1.079                     0.860
+              4                  1.014                     0.897
+             16                  0.973                     0.898
+             64                  0.922                     0.996
+
+--- complementaria, 8 hilos: N=2048, 300 pasos, 8 hilos (reales 8), mínimo de 5 rondas (fichero planificaciones_8hilos.csv) ---
+T1 = 1.7147 s (peor ronda 2.0734 s).
+planificación   T (s)  peor/mejor  S abs  T / T(static)  puesto   max_diff  verif.
+-------------  ------  ----------  -----  -------------  ------  ---------  ------
+       static  1.1228        1.03  1.527          1.000       9  0.000e+00      sí
+     static,1  1.1370        1.05  1.508          1.013      10  0.000e+00      sí
+     static,4  1.1004        1.16  1.558          0.980       7  0.000e+00      sí
+    static,16  1.0684        1.06  1.605          0.952       5  0.000e+00      sí
+    static,64  1.1015        1.06  1.557          0.981       8  0.000e+00      sí
+    dynamic,1  1.0814        1.07  1.586          0.963       6  0.000e+00      sí
+    dynamic,4  1.0061        1.06  1.704          0.896       2  0.000e+00      sí
+   dynamic,16  1.0222        1.04  1.677          0.910       3  0.000e+00      sí
+   dynamic,64  1.0469        1.05  1.638          0.932       4  0.000e+00      sí
+       guided  0.9813        1.06  1.748          0.874       1  0.000e+00      sí
+Más rápida: guided (0.9813 s, 1.144 veces más rápida que static sin trozo).
+Separación de efectos, mismo trozo: T(static,c)/T(static) mide lo que cuesta entrelazar trozos de c filas sin gestión dinámica; T(dynamic,c)/T(static,c) mide lo que añade (o quita) repartir esos mismos trozos bajo demanda.
+trozo c (filas)  T(static,c)/T(static)  T(dynamic,c)/T(static,c)
+---------------  ---------------------  ------------------------
+              1                  1.013                     0.951
+              4                  0.980                     0.914
+             16                  0.952                     0.957
+             64                  0.981                     0.950
+[codigo de salida: 0 · 0 s]
+
+########################################################################
+# EJERCICIO 6 · Optimizacion guiada por medicion
+########################################################################
+
+=== Ej6 · Evidencia E3: informe de vectorizacion de gcc (el bucle interior de la base no se vectoriza; el de it3_simd si) ===
+$ informe_vectorizacion > resultados/ejercicio6/vectorizacion.txt
+# Lineas de los bucles interiores de src/ejercicio6/p1_ej6.c:
+73:    for (size_t j = 0; j < n; ++j)
+104:        for (size_t j = 1; j < n - 1; ++j) {
+120:        for (size_t j = 1; j < n - 1; ++j) {
+146:                for (size_t j = 1; j < n - 1; ++j) {
+167:        for (size_t j = 1; j < n - 1; ++j) {
+188:        for (size_t j = 1; j < n - 1; ++j) {
+280:        for (size_t j = 1; j < n - 1; ++j) {
+297:        for (size_t j = 1; j < n - 1; ++j) {
+347:                for (size_t j = 1; j < n - 1; ++j) {
+# gcc -Wall -Wextra -O2 -std=c11 -fopenmp -fopt-info-vec-optimized (bucles y bloques vectorizados):
+src/ejercicio6/p1_ej6.c:189:20: optimized: loop vectorized using 16 byte vectors
+src/ejercicio6/p1_ej6.c:187:9: optimized: basic block part vectorized using 16 byte vectors
+src/ejercicio6/p1_ej6.c:498:23: optimized: loop vectorized using 16 byte vectors
+src/ejercicio6/p1_ej6.c:138:9: optimized: basic block part vectorized using 16 byte vectors
+# gcc -Wall -Wextra -O2 -std=c11 -fopenmp -fopt-info-vec-missed (solo los bucles NO vectorizados):
+src/ejercicio6/p1_ej6.c:73:26: missed: couldn't vectorize loop
+src/ejercicio6/p1_ej6.c:80:26: missed: couldn't vectorize loop
+src/ejercicio6/p1_ej6.c:103:26: missed: couldn't vectorize loop
+src/ejercicio6/p1_ej6.c:104:30: missed: couldn't vectorize loop
+src/ejercicio6/p1_ej6.c:118:65: missed: couldn't vectorize loop
+src/ejercicio6/p1_ej6.c:120:30: missed: couldn't vectorize loop
+src/ejercicio6/p1_ej6.c:121:26: missed: couldn't vectorize loop
+src/ejercicio6/p1_ej6.c:141:30: missed: couldn't vectorize loop
+src/ejercicio6/p1_ej6.c:144:43: missed: couldn't vectorize loop
+src/ejercicio6/p1_ej6.c:146:38: missed: couldn't vectorize loop
+src/ejercicio6/p1_ej6.c:147:34: missed: couldn't vectorize loop
+src/ejercicio6/p1_ej6.c:165:65: missed: couldn't vectorize loop
+src/ejercicio6/p1_ej6.c:167:30: missed: couldn't vectorize loop
+src/ejercicio6/p1_ej6.c:185:65: missed: couldn't vectorize loop
+src/ejercicio6/p1_ej6.c:187:9: missed: couldn't vectorize loop
+src/ejercicio6/p1_ej6.c:209:32: missed: couldn't vectorize loop
+src/ejercicio6/p1_ej6.c:215:31: missed: couldn't vectorize loop
+src/ejercicio6/p1_ej6.c:223:18: missed: couldn't vectorize loop
+src/ejercicio6/p1_ej6.c:242:14: missed: couldn't vectorize loop
+src/ejercicio6/p1_ej6.c:258:65: missed: couldn't vectorize loop
+src/ejercicio6/p1_ej6.c:278:65: missed: couldn't vectorize loop
+src/ejercicio6/p1_ej6.c:281:26: missed: couldn't vectorize loop
+src/ejercicio6/p1_ej6.c:297:30: missed: couldn't vectorize loop
+src/ejercicio6/p1_ej6.c:298:26: missed: couldn't vectorize loop
+src/ejercicio6/p1_ej6.c:310:27: missed: couldn't vectorize loop
+src/ejercicio6/p1_ej6.c:312:27: missed: couldn't vectorize loop
+src/ejercicio6/p1_ej6.c:315:17: missed: couldn't vectorize loop
+src/ejercicio6/p1_ej6.c:339:26: missed: couldn't vectorize loop
+src/ejercicio6/p1_ej6.c:342:70: missed: couldn't vectorize loop
+src/ejercicio6/p1_ej6.c:347:38: missed: couldn't vectorize loop
+src/ejercicio6/p1_ej6.c:361:23: missed: couldn't vectorize loop
+src/ejercicio6/p1_ej6.c:371:23: missed: couldn't vectorize loop
+src/ejercicio6/p1_ej6.c:410:34: missed: couldn't vectorize loop
+src/ejercicio6/p1_ej6.c:444:30: missed: couldn't vectorize loop
+src/ejercicio6/p1_ej6.c:504:31: missed: couldn't vectorize loop
+src/ejercicio6/p1_ej6.c:513:27: missed: couldn't vectorize loop
+src/ejercicio6/p1_ej6.c:536:23: missed: couldn't vectorize loop
+[codigo de salida: 0 · 1 s]
+
+=== Ej6 [PROG] Punto de partida, evidencias E1/E2, iteraciones 1-4, control y otras hipotesis; 12 hilos, N=2048, 300 pasos, 5 repeticiones; cada variante verificada ===
+$ bin/p1_ej6 2048 300 12 5 > resultados/ejercicio6/variantes.csv
+# N=2048 pasos=300 hilos=12 hilos_reales=12 repeticiones=5 rondas=intercaladas criterio=minimo SSE2=si
+# OMP_PROC_BIND=(sin fijar) OMP_PLACES=(sin fijar)
+# E2 desequilibrio static: reloj_por_paso_s=7.6430e-03 trabajo_por_paso_s min=2.1694e-03 media=2.6538e-03 max=3.0548e-03 max/min=1.41 fraccion_sin_trabajar=65.3%
+# E2 trabajo de cada hilo static (ms/paso): 2.892 2.313 2.206 2.830 2.838 2.433 3.055 2.813 2.169 2.782 2.737 2.776
+# E2 desequilibrio dynamic4: reloj_por_paso_s=5.6901e-03 trabajo_por_paso_s min=3.0778e-03 media=3.1308e-03 max=3.2094e-03 max/min=1.04 fraccion_sin_trabajar=45.0%
+# E2 trabajo de cada hilo dynamic4 (ms/paso): 3.133 3.113 3.124 3.108 3.078 3.188 3.124 3.157 3.159 3.096 3.209 3.079
+# T1_secuencial=1.585001381 T1_peor=2.523743535 residuo=0.080644327051587084
+# E1 paso_vacio_s=2.9480e-06 s_por_paso_base=4.7684e-03 fraccion_del_paso=0.06%
+variante,parte_de,cambio,tiempo_s,speedup_abs,mejora_vs_anterior,mejora_vs_base,max_diff,correcto,s_por_paso,GB_s_16B,GB_s_24B,B_celda_real,GB_s_real,tiempo_peor_s
+base,-,Ejercicio 2: parallel for por paso con schedule(static),1.430506221,1.1080,1.0000,1.0000,0.000e+00,1,4.768354e-03,14.05,21.07,24,21.07,2.382557565
+it1_region,base,una sola region paralela para todos los pasos,1.485437140,1.0670,0.9630,0.9630,0.000e+00,1,4.951457e-03,13.53,20.29,24,20.29,3.235731231
+it2_dynamic,base,schedule(static) -> schedule(dynamic 4),1.435195867,1.1044,0.9967,0.9967,0.000e+00,1,4.783986e-03,14.00,21.00,24,21.00,2.760333718
+it3_simd,it2_dynamic,#pragma omp simd en el bucle interior,1.565773307,1.0123,0.9166,0.9136,0.000e+00,1,5.219244e-03,12.83,19.25,24,19.25,2.183433375
+it4_control,it3_simd,control: it3 escrito con SSE2 a mano (escritura normal),1.476807981,1.0733,1.0602,0.9686,0.000e+00,1,4.922693e-03,13.61,20.41,24,20.41,2.286386951
+it4_nt,it4_control,escritura normal -> escritura no temporal (_mm_stream_pd),1.153720013,1.3738,1.2800,1.2399,0.000e+00,1,3.845733e-03,17.42,26.12,16,17.42,1.255524487
+alt_collapse2,base,collapse(2),1.458221022,1.0869,0.9810,0.9810,0.000e+00,1,4.860737e-03,13.78,20.67,24,20.67,1.758054154
+alt_residuo10,base,residuo solo cada 10 pasos y en el ultimo,1.459644485,1.0859,0.9800,0.9800,0.000e+00,1,4.865482e-03,13.77,20.65,24,20.65,1.751616089
+# verificacion de todas las variantes: PASA
+[stderr]
+[ronda 1/5] base=2.382558 it1_region=3.235731 it2_dynamic=2.760334 it3_simd=2.183433 it4_control=2.286387 it4_nt=1.229577 alt_collapse2=1.459412 alt_residuo10=1.481779
+[ronda 2/5] base=1.982786 it1_region=1.558419 it2_dynamic=1.435196 it3_simd=1.577750 it4_control=1.488670 it4_nt=1.183628 alt_collapse2=1.758054 alt_residuo10=1.541533
+[ronda 3/5] base=1.477364 it1_region=1.501558 it2_dynamic=1.459842 it3_simd=1.568716 it4_control=1.476808 it4_nt=1.246694 alt_collapse2=1.458221 alt_residuo10=1.459644
+[ronda 4/5] base=1.430506 it1_region=1.485437 it2_dynamic=1.473084 it3_simd=1.565773 it4_control=1.492260 it4_nt=1.255524 alt_collapse2=1.577760 alt_residuo10=1.643566
+[ronda 5/5] base=1.495804 it1_region=1.499331 it2_dynamic=1.487558 it3_simd=1.613845 it4_control=1.482242 it4_nt=1.153720 alt_collapse2=1.623943 alt_residuo10=1.751616
+(sumidero de E2: 304.078)
+[codigo de salida: 0 · 97 s]
+
+=== Ej6 · Afinidad (candidato del enunciado): el mismo binario con OMP_PROC_BIND=close OMP_PLACES=cores ===
+$ env OMP_PROC_BIND=close OMP_PLACES=cores bin/p1_ej6 2048 300 12 5 > resultados/ejercicio6/variantes_afinidad_close.csv
+# N=2048 pasos=300 hilos=12 hilos_reales=12 repeticiones=5 rondas=intercaladas criterio=minimo SSE2=si
+# OMP_PROC_BIND=close OMP_PLACES=cores
+# E2 desequilibrio static: reloj_por_paso_s=4.8642e-03 trabajo_por_paso_s min=2.1258e-03 media=2.6379e-03 max=2.9317e-03 max/min=1.38 fraccion_sin_trabajar=45.8%
+# E2 trabajo de cada hilo static (ms/paso): 2.266 2.203 2.866 2.851 2.814 2.832 2.862 2.897 2.932 2.871 2.137 2.126
+# E2 desequilibrio dynamic4: reloj_por_paso_s=4.8852e-03 trabajo_por_paso_s min=2.9945e-03 media=3.0358e-03 max=3.0968e-03 max/min=1.03 fraccion_sin_trabajar=37.9%
+# E2 trabajo de cada hilo dynamic4 (ms/paso): 3.039 3.023 3.083 3.097 2.994 3.034 3.089 3.008 3.009 2.998 3.019 3.035
+# T1_secuencial=1.540764187 T1_peor=2.031124302 residuo=0.080644327051587084
+# E1 paso_vacio_s=4.2337e-04 s_por_paso_base=4.8640e-03 fraccion_del_paso=8.70%
+variante,parte_de,cambio,tiempo_s,speedup_abs,mejora_vs_anterior,mejora_vs_base,max_diff,correcto,s_por_paso,GB_s_16B,GB_s_24B,B_celda_real,GB_s_real,tiempo_peor_s
+base,-,Ejercicio 2: parallel for por paso con schedule(static),1.459198184,1.0559,1.0000,1.0000,0.000e+00,1,4.863994e-03,13.77,20.66,24,20.66,1.901809784
+it1_region,base,una sola region paralela para todos los pasos,1.476406997,1.0436,0.9883,0.9883,0.000e+00,1,4.921357e-03,13.61,20.41,24,20.41,2.077976203
+it2_dynamic,base,schedule(static) -> schedule(dynamic 4),1.498917286,1.0279,0.9735,0.9735,0.000e+00,1,4.996391e-03,13.41,20.11,24,20.11,1.793174244
+it3_simd,it2_dynamic,#pragma omp simd en el bucle interior,1.528616955,1.0079,0.9806,0.9546,0.000e+00,1,5.095390e-03,13.14,19.72,24,19.72,1.581890120
+it4_control,it3_simd,control: it3 escrito con SSE2 a mano (escritura normal),1.434126870,1.0744,1.0659,1.0175,0.000e+00,1,4.780423e-03,14.01,21.02,24,21.02,1.676650440
+it4_nt,it4_control,escritura normal -> escritura no temporal (_mm_stream_pd),1.137133087,1.3550,1.2612,1.2832,0.000e+00,1,3.790444e-03,17.67,26.51,16,17.67,1.331559931
+alt_collapse2,base,collapse(2),1.503554008,1.0247,0.9705,0.9705,0.000e+00,1,5.011847e-03,13.36,20.05,24,20.05,1.583165601
+alt_residuo10,base,residuo solo cada 10 pasos y en el ultimo,1.436208062,1.0728,1.0160,1.0160,0.000e+00,1,4.787360e-03,13.99,20.99,24,20.99,1.494958353
+# verificacion de todas las variantes: PASA
+[stderr]
+[ronda 1/5] base=1.538990 it1_region=1.715988 it2_dynamic=1.501907 it3_simd=1.528617 it4_control=1.439641 it4_nt=1.187773 alt_collapse2=1.523119 alt_residuo10=1.492870
+[ronda 2/5] base=1.483817 it1_region=1.573184 it2_dynamic=1.498917 it3_simd=1.539485 it4_control=1.445572 it4_nt=1.137133 alt_collapse2=1.583166 alt_residuo10=1.477401
+[ronda 3/5] base=1.459198 it1_region=2.077976 it2_dynamic=1.668082 it3_simd=1.537540 it4_control=1.518372 it4_nt=1.176095 alt_collapse2=1.503554 alt_residuo10=1.436583
+[ronda 4/5] base=1.512670 it1_region=1.539388 it2_dynamic=1.521796 it3_simd=1.581890 it4_control=1.676650 it4_nt=1.331560 alt_collapse2=1.555449 alt_residuo10=1.494958
+[ronda 5/5] base=1.901810 it1_region=1.476407 it2_dynamic=1.793174 it3_simd=1.581417 it4_control=1.434127 it4_nt=1.265401 alt_collapse2=1.524734 alt_residuo10=1.436208
+(sumidero de E2: 304.078)
+[codigo de salida: 0 · 83 s]
+
+=== Ej6 · Afinidad: OMP_PROC_BIND=spread OMP_PLACES=threads ===
+$ env OMP_PROC_BIND=spread OMP_PLACES=threads bin/p1_ej6 2048 300 12 5 > resultados/ejercicio6/variantes_afinidad_spread.csv
+# N=2048 pasos=300 hilos=12 hilos_reales=12 repeticiones=5 rondas=intercaladas criterio=minimo SSE2=si
+# OMP_PROC_BIND=spread OMP_PLACES=threads
+# E2 desequilibrio static: reloj_por_paso_s=8.4577e-03 trabajo_por_paso_s min=1.7951e-03 media=2.6418e-03 max=3.4839e-03 max/min=1.94 fraccion_sin_trabajar=68.8%
+# E2 trabajo de cada hilo static (ms/paso): 1.795 1.995 2.214 2.833 2.660 3.265 2.758 3.484 3.273 2.805 2.589 2.030
+# E2 desequilibrio dynamic4: reloj_por_paso_s=5.7958e-03 trabajo_por_paso_s min=3.0771e-03 media=3.1497e-03 max=3.2417e-03 max/min=1.05 fraccion_sin_trabajar=45.7%
+# E2 trabajo de cada hilo dynamic4 (ms/paso): 3.107 3.176 3.150 3.077 3.171 3.182 3.148 3.133 3.242 3.210 3.096 3.104
+# T1_secuencial=1.699958168 T1_peor=1.838444697 residuo=0.080644327051587084
+# E1 paso_vacio_s=5.9539e-04 s_por_paso_base=5.4263e-03 fraccion_del_paso=10.97%
+variante,parte_de,cambio,tiempo_s,speedup_abs,mejora_vs_anterior,mejora_vs_base,max_diff,correcto,s_por_paso,GB_s_16B,GB_s_24B,B_celda_real,GB_s_real,tiempo_peor_s
+base,-,Ejercicio 2: parallel for por paso con schedule(static),1.627895370,1.0443,1.0000,1.0000,0.000e+00,1,5.426318e-03,12.34,18.51,24,18.51,1.994979983
+it1_region,base,una sola region paralela para todos los pasos,1.607288130,1.0577,1.0128,1.0128,0.000e+00,1,5.357627e-03,12.50,18.75,24,18.75,1.786189044
+it2_dynamic,base,schedule(static) -> schedule(dynamic 4),1.435478122,1.1842,1.1340,1.1340,0.000e+00,1,4.784927e-03,14.00,21.00,24,21.00,1.492753013
+it3_simd,it2_dynamic,#pragma omp simd en el bucle interior,1.514373058,1.1225,0.9479,1.0750,0.000e+00,1,5.047910e-03,13.27,19.90,24,19.90,1.608570226
+it4_control,it3_simd,control: it3 escrito con SSE2 a mano (escritura normal),1.443292913,1.1778,1.0492,1.1279,0.000e+00,1,4.810976e-03,13.92,20.88,24,20.88,1.881032881
+it4_nt,it4_control,escritura normal -> escritura no temporal (_mm_stream_pd),1.145367292,1.4842,1.2601,1.4213,0.000e+00,1,3.817891e-03,17.54,26.31,16,17.54,2.262080836
+alt_collapse2,base,collapse(2),1.662518053,1.0225,0.9792,0.9792,0.000e+00,1,5.541727e-03,12.09,18.13,24,18.13,2.174834668
+alt_residuo10,base,residuo solo cada 10 pasos y en el ultimo,1.565955485,1.0856,1.0396,1.0396,0.000e+00,1,5.219852e-03,12.83,19.25,24,19.25,2.035886809
+# verificacion de todas las variantes: PASA
+[stderr]
+[ronda 1/5] base=1.879787 it1_region=1.607288 it2_dynamic=1.468985 it3_simd=1.547155 it4_control=1.448890 it4_nt=1.211121 alt_collapse2=1.681722 alt_residuo10=1.667761
+[ronda 2/5] base=1.630411 it1_region=1.637938 it2_dynamic=1.492753 it3_simd=1.608570 it4_control=1.507759 it4_nt=1.149773 alt_collapse2=1.712303 alt_residuo10=1.585797
+[ronda 3/5] base=1.739256 it1_region=1.786189 it2_dynamic=1.443980 it3_simd=1.554383 it4_control=1.881033 it4_nt=2.262081 alt_collapse2=2.174835 alt_residuo10=1.706111
+[ronda 4/5] base=1.627895 it1_region=1.639235 it2_dynamic=1.476255 it3_simd=1.514373 it4_control=1.443293 it4_nt=1.161701 alt_collapse2=1.662518 alt_residuo10=1.565955
+[ronda 5/5] base=1.994980 it1_region=1.633718 it2_dynamic=1.435478 it3_simd=1.515836 it4_control=1.502340 it4_nt=1.145367 alt_collapse2=1.774107 alt_residuo10=2.035887
+(sumidero de E2: 304.078)
+[codigo de salida: 0 · 95 s]
+
+=== Ej6 · Medida complementaria (no pedida): las mismas variantes con 8 hilos y sin afinidad (12 hilos ocupan todas las CPU logicas de WSL2) ===
+$ bin/p1_ej6 2048 300 8 5 > resultados/ejercicio6/variantes_8hilos.csv
+# N=2048 pasos=300 hilos=8 hilos_reales=8 repeticiones=5 rondas=intercaladas criterio=minimo SSE2=si
+# OMP_PROC_BIND=(sin fijar) OMP_PLACES=(sin fijar)
+# E2 desequilibrio static: reloj_por_paso_s=3.9976e-03 trabajo_por_paso_s min=2.8494e-03 media=3.1077e-03 max=3.3248e-03 max/min=1.17 fraccion_sin_trabajar=22.3%
+# E2 trabajo de cada hilo static (ms/paso): 3.120 2.913 3.270 3.104 2.849 3.325 3.046 3.233
+# E2 desequilibrio dynamic4: reloj_por_paso_s=3.5213e-03 trabajo_por_paso_s min=3.4524e-03 media=3.4554e-03 max=3.4591e-03 max/min=1.00 fraccion_sin_trabajar=1.9%
+# E2 trabajo de cada hilo dynamic4 (ms/paso): 3.455 3.459 3.452 3.456 3.457 3.454 3.454 3.456
+# T1_secuencial=1.669975036 T1_peor=1.797615301 residuo=0.080644327051587084
+# E1 paso_vacio_s=1.1415e-06 s_por_paso_base=3.3051e-03 fraccion_del_paso=0.03%
+variante,parte_de,cambio,tiempo_s,speedup_abs,mejora_vs_anterior,mejora_vs_base,max_diff,correcto,s_por_paso,GB_s_16B,GB_s_24B,B_celda_real,GB_s_real,tiempo_peor_s
+base,-,Ejercicio 2: parallel for por paso con schedule(static),0.991542103,1.6842,1.0000,1.0000,0.000e+00,1,3.305140e-03,20.26,30.40,24,30.40,1.098438576
+it1_region,base,una sola region paralela para todos los pasos,0.973296401,1.7158,1.0187,1.0187,0.000e+00,1,3.244321e-03,20.64,30.97,24,30.97,1.118913331
+it2_dynamic,base,schedule(static) -> schedule(dynamic 4),0.944050878,1.7689,1.0503,1.0503,0.000e+00,1,3.146836e-03,21.28,31.93,24,31.93,1.062973048
+it3_simd,it2_dynamic,#pragma omp simd en el bucle interior,1.016898128,1.6422,0.9284,0.9751,0.000e+00,1,3.389660e-03,19.76,29.64,24,29.64,1.099224236
+it4_control,it3_simd,control: it3 escrito con SSE2 a mano (escritura normal),0.913750638,1.8276,1.1129,1.0851,0.000e+00,1,3.045835e-03,21.99,32.98,24,32.98,1.037647922
+it4_nt,it4_control,escritura normal -> escritura no temporal (_mm_stream_pd),0.636620010,2.6232,1.4353,1.5575,0.000e+00,1,2.122067e-03,31.56,47.34,16,31.56,0.679377018
+alt_collapse2,base,collapse(2),1.101835742,1.5156,0.8999,0.8999,0.000e+00,1,3.672786e-03,18.24,27.35,24,27.35,1.150213642
+alt_residuo10,base,residuo solo cada 10 pasos y en el ultimo,1.017553291,1.6412,0.9744,0.9744,0.000e+00,1,3.391844e-03,19.75,29.62,24,29.62,1.212513907
+# verificacion de todas las variantes: PASA
+[stderr]
+[ronda 1/5] base=1.079406 it1_region=1.063136 it2_dynamic=1.024156 it3_simd=1.076334 it4_control=0.972322 it4_nt=0.657442 alt_collapse2=1.121911 alt_residuo10=1.212514
+[ronda 2/5] base=1.098439 it1_region=1.118913 it2_dynamic=1.062973 it3_simd=1.099224 it4_control=1.037648 it4_nt=0.656132 alt_collapse2=1.139182 alt_residuo10=1.078644
+[ronda 3/5] base=0.991542 it1_region=0.973296 it2_dynamic=0.944051 it3_simd=1.016898 it4_control=0.913751 it4_nt=0.651888 alt_collapse2=1.101836 alt_residuo10=1.024423
+[ronda 4/5] base=1.032127 it1_region=1.040935 it2_dynamic=1.025294 it3_simd=1.067254 it4_control=0.974146 it4_nt=0.636620 alt_collapse2=1.139254 alt_residuo10=1.017553
+[ronda 5/5] base=1.092291 it1_region=1.056939 it2_dynamic=1.045973 it3_simd=1.098576 it4_control=0.989761 it4_nt=0.679377 alt_collapse2=1.150214 alt_residuo10=1.098173
+(sumidero de E2: 304.078)
+[codigo de salida: 0 · 55 s]
+
+=== Ej6 · Tablas derivadas: cadena de iteraciones, mejora de cada una sobre la anterior, ancho de banda conseguido frente a STREAM y efecto de la afinidad ===
+$ python3 src/analisis_lab1.py ej6
+
+--- Ejercicio 6 · optimización guiada por medición ---
+Techo de ancho de banda (STREAM triad): máximo 23.73 GB/s (24 B) / 31.63 GB/s (32 B, con lectura previa) con 8 hilos; 1 hilo: 18.23 / 24.31 GB/s.
+
+--- sin afinidad: N=2048, 300 pasos, 12 hilos (reales 12), mínimo de 5 rondas (fichero variantes.csv) ---
+T1 = 1.5850 s (peor ronda 2.5237 s).
+Evidencia E2 desequilibrio static: reloj_por_paso_s=7.6430e-03 trabajo_por_paso_s min=2.1694e-03 media=2.6538e-03 max=3.0548e-03 max/min=1.41 fraccion_sin_trabajar=65.3%
+Evidencia E2 trabajo de cada hilo static (ms/paso): 2.892 2.313 2.206 2.830 2.838 2.433 3.055 2.813 2.169 2.782 2.737 2.776
+Evidencia E2 desequilibrio dynamic4: reloj_por_paso_s=5.6901e-03 trabajo_por_paso_s min=3.0778e-03 media=3.1308e-03 max=3.2094e-03 max/min=1.04 fraccion_sin_trabajar=45.0%
+Evidencia E2 trabajo de cada hilo dynamic4 (ms/paso): 3.133 3.113 3.124 3.108 3.078 3.188 3.124 3.157 3.159 3.096 3.209 3.079
+Evidencia E1 paso_vacio_s=2.9480e-06 s_por_paso_base=4.7684e-03 fraccion_del_paso=0.06%
+     variante     parte de   T (s)  peor/mejor  S abs  mejora vs anterior  mejora vs base  GB/s 16 B    GB/s real  % STREAM real   max_diff  verif.
+-------------  -----------  ------  ----------  -----  ------------------  --------------  ---------  -----------  -------------  ---------  ------
+         base            -  1.4305        1.67  1.108               1.000           1.000      14.05  24 B: 21.07         66.6 %  0.000e+00      sí
+   it1_region         base  1.4854        2.18  1.067               0.963           0.963      13.53  24 B: 20.29         64.1 %  0.000e+00      sí
+  it2_dynamic         base  1.4352        1.92  1.104               0.997           0.997      14.00  24 B: 21.00         66.4 %  0.000e+00      sí
+     it3_simd  it2_dynamic  1.5658        1.39  1.012               0.917           0.914      12.83  24 B: 19.25         60.9 %  0.000e+00      sí
+  it4_control     it3_simd  1.4768        1.55  1.073               1.060           0.969      13.61  24 B: 20.41         64.5 %  0.000e+00      sí
+       it4_nt  it4_control  1.1537        1.09  1.374               1.280           1.240      17.42  16 B: 17.42         55.1 %  0.000e+00      sí
+alt_collapse2         base  1.4582        1.21  1.087               0.981           0.981      13.78  24 B: 20.67         65.3 %  0.000e+00      sí
+alt_residuo10         base  1.4596        1.20  1.086               0.980           0.980      13.77  24 B: 20.65         65.3 %  0.000e+00      sí
+GB/s real: bytes que la variante mueve de verdad por celda (24 B con escritura normal, que lee la línea antes de escribirla; 16 B con escritura no temporal, que no la lee). % STREAM real: frente al máximo de STREAM contado también con sus bytes reales (modelo de 32 B, que incluye esa misma lectura previa).
+
+--- OMP_PROC_BIND=close OMP_PLACES=cores: N=2048, 300 pasos, 12 hilos (reales 12), mínimo de 5 rondas (fichero variantes_afinidad_close.csv) ---
+T1 = 1.5408 s (peor ronda 2.0311 s).
+Evidencia E2 desequilibrio static: reloj_por_paso_s=4.8642e-03 trabajo_por_paso_s min=2.1258e-03 media=2.6379e-03 max=2.9317e-03 max/min=1.38 fraccion_sin_trabajar=45.8%
+Evidencia E2 trabajo de cada hilo static (ms/paso): 2.266 2.203 2.866 2.851 2.814 2.832 2.862 2.897 2.932 2.871 2.137 2.126
+Evidencia E2 desequilibrio dynamic4: reloj_por_paso_s=4.8852e-03 trabajo_por_paso_s min=2.9945e-03 media=3.0358e-03 max=3.0968e-03 max/min=1.03 fraccion_sin_trabajar=37.9%
+Evidencia E2 trabajo de cada hilo dynamic4 (ms/paso): 3.039 3.023 3.083 3.097 2.994 3.034 3.089 3.008 3.009 2.998 3.019 3.035
+Evidencia E1 paso_vacio_s=4.2337e-04 s_por_paso_base=4.8640e-03 fraccion_del_paso=8.70%
+     variante     parte de   T (s)  peor/mejor  S abs  mejora vs anterior  mejora vs base  GB/s 16 B    GB/s real  % STREAM real   max_diff  verif.
+-------------  -----------  ------  ----------  -----  ------------------  --------------  ---------  -----------  -------------  ---------  ------
+         base            -  1.4592        1.30  1.056               1.000           1.000      13.77  24 B: 20.66         65.3 %  0.000e+00      sí
+   it1_region         base  1.4764        1.41  1.044               0.988           0.988      13.61  24 B: 20.41         64.5 %  0.000e+00      sí
+  it2_dynamic         base  1.4989        1.20  1.028               0.974           0.974      13.41  24 B: 20.11         63.6 %  0.000e+00      sí
+     it3_simd  it2_dynamic  1.5286        1.03  1.008               0.981           0.955      13.14  24 B: 19.72         62.3 %  0.000e+00      sí
+  it4_control     it3_simd  1.4341        1.17  1.074               1.066           1.018      14.01  24 B: 21.02         66.5 %  0.000e+00      sí
+       it4_nt  it4_control  1.1371        1.17  1.355               1.261           1.283      17.67  16 B: 17.67         55.9 %  0.000e+00      sí
+alt_collapse2         base  1.5036        1.05  1.025               0.971           0.971      13.36  24 B: 20.05         63.4 %  0.000e+00      sí
+alt_residuo10         base  1.4362        1.04  1.073               1.016           1.016      13.99  24 B: 20.99         66.4 %  0.000e+00      sí
+GB/s real: bytes que la variante mueve de verdad por celda (24 B con escritura normal, que lee la línea antes de escribirla; 16 B con escritura no temporal, que no la lee). % STREAM real: frente al máximo de STREAM contado también con sus bytes reales (modelo de 32 B, que incluye esa misma lectura previa).
+
+--- OMP_PROC_BIND=spread OMP_PLACES=threads: N=2048, 300 pasos, 12 hilos (reales 12), mínimo de 5 rondas (fichero variantes_afinidad_spread.csv) ---
+T1 = 1.7000 s (peor ronda 1.8384 s).
+Evidencia E2 desequilibrio static: reloj_por_paso_s=8.4577e-03 trabajo_por_paso_s min=1.7951e-03 media=2.6418e-03 max=3.4839e-03 max/min=1.94 fraccion_sin_trabajar=68.8%
+Evidencia E2 trabajo de cada hilo static (ms/paso): 1.795 1.995 2.214 2.833 2.660 3.265 2.758 3.484 3.273 2.805 2.589 2.030
+Evidencia E2 desequilibrio dynamic4: reloj_por_paso_s=5.7958e-03 trabajo_por_paso_s min=3.0771e-03 media=3.1497e-03 max=3.2417e-03 max/min=1.05 fraccion_sin_trabajar=45.7%
+Evidencia E2 trabajo de cada hilo dynamic4 (ms/paso): 3.107 3.176 3.150 3.077 3.171 3.182 3.148 3.133 3.242 3.210 3.096 3.104
+Evidencia E1 paso_vacio_s=5.9539e-04 s_por_paso_base=5.4263e-03 fraccion_del_paso=10.97%
+     variante     parte de   T (s)  peor/mejor  S abs  mejora vs anterior  mejora vs base  GB/s 16 B    GB/s real  % STREAM real   max_diff  verif.
+-------------  -----------  ------  ----------  -----  ------------------  --------------  ---------  -----------  -------------  ---------  ------
+         base            -  1.6279        1.23  1.044               1.000           1.000      12.34  24 B: 18.51         58.5 %  0.000e+00      sí
+   it1_region         base  1.6073        1.11  1.058               1.013           1.013      12.50  24 B: 18.75         59.3 %  0.000e+00      sí
+  it2_dynamic         base  1.4355        1.04  1.184               1.134           1.134      14.00  24 B: 21.00         66.4 %  0.000e+00      sí
+     it3_simd  it2_dynamic  1.5144        1.06  1.123               0.948           1.075      13.27  24 B: 19.90         62.9 %  0.000e+00      sí
+  it4_control     it3_simd  1.4433        1.30  1.178               1.049           1.128      13.92  24 B: 20.88         66.0 %  0.000e+00      sí
+       it4_nt  it4_control  1.1454        1.97  1.484               1.260           1.421      17.54  16 B: 17.54         55.5 %  0.000e+00      sí
+alt_collapse2         base  1.6625        1.31  1.022               0.979           0.979      12.09  24 B: 18.13         57.3 %  0.000e+00      sí
+alt_residuo10         base  1.5660        1.30  1.086               1.040           1.040      12.83  24 B: 19.25         60.9 %  0.000e+00      sí
+GB/s real: bytes que la variante mueve de verdad por celda (24 B con escritura normal, que lee la línea antes de escribirla; 16 B con escritura no temporal, que no la lee). % STREAM real: frente al máximo de STREAM contado también con sus bytes reales (modelo de 32 B, que incluye esa misma lectura previa).
+
+--- complementaria, 8 hilos, sin afinidad: N=2048, 300 pasos, 8 hilos (reales 8), mínimo de 5 rondas (fichero variantes_8hilos.csv) ---
+T1 = 1.6700 s (peor ronda 1.7976 s).
+Evidencia E2 desequilibrio static: reloj_por_paso_s=3.9976e-03 trabajo_por_paso_s min=2.8494e-03 media=3.1077e-03 max=3.3248e-03 max/min=1.17 fraccion_sin_trabajar=22.3%
+Evidencia E2 trabajo de cada hilo static (ms/paso): 3.120 2.913 3.270 3.104 2.849 3.325 3.046 3.233
+Evidencia E2 desequilibrio dynamic4: reloj_por_paso_s=3.5213e-03 trabajo_por_paso_s min=3.4524e-03 media=3.4554e-03 max=3.4591e-03 max/min=1.00 fraccion_sin_trabajar=1.9%
+Evidencia E2 trabajo de cada hilo dynamic4 (ms/paso): 3.455 3.459 3.452 3.456 3.457 3.454 3.454 3.456
+Evidencia E1 paso_vacio_s=1.1415e-06 s_por_paso_base=3.3051e-03 fraccion_del_paso=0.03%
+     variante     parte de   T (s)  peor/mejor  S abs  mejora vs anterior  mejora vs base  GB/s 16 B    GB/s real  % STREAM real   max_diff  verif.
+-------------  -----------  ------  ----------  -----  ------------------  --------------  ---------  -----------  -------------  ---------  ------
+         base            -  0.9915        1.11  1.684               1.000           1.000      20.26  24 B: 30.40         96.1 %  0.000e+00      sí
+   it1_region         base  0.9733        1.15  1.716               1.019           1.019      20.64  24 B: 30.97         97.9 %  0.000e+00      sí
+  it2_dynamic         base  0.9441        1.13  1.769               1.050           1.050      21.28  24 B: 31.93        100.9 %  0.000e+00      sí
+     it3_simd  it2_dynamic  1.0169        1.08  1.642               0.928           0.975      19.76  24 B: 29.64         93.7 %  0.000e+00      sí
+  it4_control     it3_simd  0.9138        1.14  1.828               1.113           1.085      21.99  24 B: 32.98        104.3 %  0.000e+00      sí
+       it4_nt  it4_control  0.6366        1.07  2.623               1.435           1.558      31.56  16 B: 31.56         99.8 %  0.000e+00      sí
+alt_collapse2         base  1.1018        1.04  1.516               0.900           0.900      18.24  24 B: 27.35         86.5 %  0.000e+00      sí
+alt_residuo10         base  1.0176        1.19  1.641               0.974           0.974      19.75  24 B: 29.62         93.6 %  0.000e+00      sí
+GB/s real: bytes que la variante mueve de verdad por celda (24 B con escritura normal, que lee la línea antes de escribirla; 16 B con escritura no temporal, que no la lee). % STREAM real: frente al máximo de STREAM contado también con sus bytes reales (modelo de 32 B, que incluye esa misma lectura previa).
+
+--- Afinidad: la misma tabla con OMP_PROC_BIND / OMP_PLACES (tiempos en s) ---
+     variante  sin afinidad  OMP_PROC_BIND=close OMP_PLACES=cores  OMP_PROC_BIND=spread OMP_PLACES=threads  mejora OMP_PROC_BIND=close  mejora OMP_PROC_BIND=spread
+-------------  ------------  ------------------------------------  ---------------------------------------  --------------------------  ---------------------------
+         base        1.4305                                1.4592                                   1.6279                       0.980                        0.879
+   it1_region        1.4854                                1.4764                                   1.6073                       1.006                        0.924
+  it2_dynamic        1.4352                                1.4989                                   1.4355                       0.957                        1.000
+     it3_simd        1.5658                                1.5286                                   1.5144                       1.024                        1.034
+  it4_control        1.4768                                1.4341                                   1.4433                       1.030                        1.023
+       it4_nt        1.1537                                1.1371                                   1.1454                       1.015                        1.007
+alt_collapse2        1.4582                                1.5036                                   1.6625                       0.970                        0.877
+alt_residuo10        1.4596                                1.4362                                   1.5660                       1.016                        0.932
+[codigo de salida: 0 · 0 s]
+
+########################################################################
+# Graficas y tablas para la memoria
+########################################################################
+$ python3 src/graficas_lab1.py
+Gráficas guardadas bajo /home/gonde/CAR/CAR_TheBig5/Laboratorio1/resultados
+[codigo de salida: 0 · 1 s]
+$ sh -c 'ls -l resultados/ejercicio3/*.png resultados/ejercicio4/*.png resultados/ejercicio5/*.png resultados/ejercicio6/*.png'
+-rw-r--r-- 1 gonde gonde 109581 Nov  6 17:59 resultados/ejercicio3/grafica_eficiencia.png
+-rw-r--r-- 1 gonde gonde 154735 Nov  6 17:59 resultados/ejercicio3/grafica_fuerte.png
+-rw-r--r-- 1 gonde gonde 103205 Nov  6 17:59 resultados/ejercicio4/grafica_debil.png
+-rw-r--r-- 1 gonde gonde 155693 Nov  6 17:59 resultados/ejercicio5/grafica_planificaciones.png
+-rw-r--r-- 1 gonde gonde 144979 Nov  6 17:59 resultados/ejercicio6/grafica_ancho_banda.png
+-rw-r--r-- 1 gonde gonde 133841 Nov  6 17:59 resultados/ejercicio6/grafica_variantes.png
+[codigo de salida: 0 · 0 s]
+$ python3 src/analisis_lab1.py markdown > docs/tablas_ej2_ej6.md
+(generado docs/tablas_ej2_ej6.md: las mismas tablas derivadas, en Markdown)
+
+########################################################################
+# Resumen final de validaciones
+########################################################################
+$ python3 src/analisis_lab1.py resumen
+
+--- Resumen de validaciones (calculado de los CSV) ---
+                           comprobación  estado                                                  detalle
+---------------------------------------  ------  -------------------------------------------------------
+                      Ej2 Jacobi N=2048    PASA                                  8/8 recuentos correctos
+           Ej2 in situ rechazado N=2048    PASA                                         16/16 rechazadas
+Ej2 in situ depende de los hilos N=2048    PASA                                    4 checksums distintos
+                       Ej2 Jacobi N=256    PASA                                  8/8 recuentos correctos
+            Ej2 in situ rechazado N=256    PASA                                         16/16 rechazadas
+ Ej2 in situ depende de los hilos N=256    PASA                                    8 checksums distintos
+                      Ej3 fuerte N=2048    PASA  checksum y residuo = secuencial; hilos reales = pedidos
+                       Ej3 fuerte N=256    PASA  checksum y residuo = secuencial; hilos reales = pedidos
+                              Ej4 débil    PASA    cada N verificada contra la secuencial con la misma N
+                Ej5 planificaciones.csv    PASA                            todas dan el campo secuencial
+         Ej5 planificaciones_8hilos.csv    PASA                            todas dan el campo secuencial
+                      Ej6 variantes.csv    PASA                                8/8 variantes verificadas
+       Ej6 variantes_afinidad_close.csv    PASA                                8/8 variantes verificadas
+      Ej6 variantes_afinidad_spread.csv    PASA                                8/8 variantes verificadas
+               Ej6 variantes_8hilos.csv    PASA                                8/8 variantes verificadas
+                                 STREAM    PASA                    a[i] = 1 + 3·2 = 7 en todas las filas
+TODAS LAS VERIFICACIONES PASAN
+[codigo de salida: 0 · 0 s]
+
+Fin: 2026-11-06 17:59:29 +0100. Duracion total: 1500 s.
+Nota: los bloques de tablas derivadas (ej2, ej3, ej4, ej5, ej6, resumen) se regeneraron el 2026-11-06 18:03:56 +0100 con 'python3 src/analisis_lab1.py refrescar-registro' sobre los mismos CSV; no se repitió ninguna medida.
+Nota: las graficas (resultados/ejercicio*/grafica_*.png) se regeneraron el 2026-11-06 18:06:38 +0100 con 'python3 src/graficas_lab1.py' sobre los mismos CSV; solo cambio la presentacion (leyendas, pie y la linea del limite por ancho de banda en la debil).

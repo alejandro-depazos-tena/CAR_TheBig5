@@ -3,7 +3,11 @@
  * Uso: ./p1_ej5 [N=2048] [pasos=300] [hilos=12] [repeticiones=4]
  * El bucle usa schedule(runtime) y la planificacion se fija con
  * omp_set_schedule(), asi el codigo medido es identico en todos los casos.
- * Cada caso se verifica contra la version SECUENCIAL.
+ * Cada caso se verifica contra la version SECUENCIAL (en todas las rondas).
+ * Las repeticiones van en RONDAS INTERCALADAS: cada ronda mide una vez la
+ * secuencial (T1) y las diez planificaciones, para que una racha lenta de la
+ * maquina no caiga sobre todas las repeticiones de un mismo caso. Criterio:
+ * minimo de las rondas; tiempo_peor_s es el maximo (dispersion del caso).
  */
 #include <math.h>
 #include <omp.h>
@@ -72,13 +76,46 @@ static omp_sched_t sched(const char *s)
     return omp_sched_static;
 }
 
-/* chunk = 0 significa "sin trozo" (reparto por defecto de la planificacion). */
-static void run_case(const char *kind, int chunk, size_t n, size_t steps,
-                     int reps, const double *reference, double t_seq,
-                     double *a, double *b)
+static int hilos_reales(void)
+{
+    int reales = 0;
+#pragma omp parallel default(none) shared(reales)
+    {
+#pragma omp single
+        reales = omp_get_num_threads();
+    }
+    return reales;
+}
+
+/* Referencia secuencial: mejor de 'reps'; deja el campo final en ref. */
+static double mide_seq(double *ref, double *tmp, size_t n, size_t steps,
+                       int reps, double *res_seq)
+{
+    double t_seq = 1e30;
+    for (int rep = 0; rep < reps; ++rep) {
+        init(ref, tmp, n);
+        double *u = ref, *v = tmp;
+        double t0 = omp_get_wtime();
+        for (size_t s = 0; s < steps; ++s) {
+            *res_seq = step_seq(u, v, n); /* se imprime: -O2 no puede quitarlo */
+            double *x = u; u = v; v = x;
+        }
+        double dt = omp_get_wtime() - t0;
+        if (dt < t_seq) t_seq = dt;
+        if (u != ref) memcpy(ref, u, bytes(n)); /* fuera del cronometro */
+    }
+    return t_seq;
+}
+
+/* chunk = 0 significa "sin trozo" (reparto por defecto de la planificacion).
+ * Devuelve el mejor tiempo y deja en *d la diferencia maxima con la
+ * referencia secuencial. */
+static double run_case(const char *kind, int chunk, size_t n, size_t steps,
+                       int reps, const double *reference, double *a, double *b,
+                       double *d)
 {
     omp_set_schedule(sched(kind), chunk);
-    double mejor = 1e30, d = 0.0;
+    double mejor = 1e30;
     for (int rep = 0; rep < reps; ++rep) {
         init(a, b, n);
         double *u = a, *v = b;
@@ -89,10 +126,9 @@ static void run_case(const char *kind, int chunk, size_t n, size_t steps,
         }
         double dt = omp_get_wtime() - t0;
         if (dt < mejor) mejor = dt;
-        d = diff(u, reference, n);
+        *d = diff(u, reference, n);
     }
-    printf("%s,%d,%.9f,%.4f,%.3e,%d\n", kind, chunk, mejor, t_seq / mejor, d,
-           d <= TOLERANCIA);
+    return mejor;
 }
 
 int main(int argc, char **argv)
@@ -112,32 +148,61 @@ int main(int argc, char **argv)
     double *a = malloc(bytes(n)), *b = malloc(bytes(n));
     if (!ref || !tmp || !a || !b) return EXIT_FAILURE;
 
-    /* Referencia secuencial (y su tiempo, para el speedup absoluto). */
-    double t_seq = 1e30, res_seq = 0.0;
-    for (int rep = 0; rep < reps; ++rep) {
-        init(ref, tmp, n);
-        double *u = ref, *v = tmp;
-        double t0 = omp_get_wtime();
-        for (size_t s = 0; s < steps; ++s) {
-            res_seq = step_seq(u, v, n); /* se imprime: -O2 no puede quitarlo */
-            double *x = u; u = v; v = x;
-        }
-        double dt = omp_get_wtime() - t0;
-        if (dt < t_seq) t_seq = dt;
-        if (u != ref) memcpy(ref, u, bytes(n)); /* fuera del cronometro */
-    }
+    int reales = hilos_reales();
 
-    printf("# N=%zu pasos=%zu hilos=%d repeticiones=%d criterio=minimo "
-           "T1_secuencial=%.9f residuo=%.17g\n", n, steps, hilos, reps, t_seq, res_seq);
-    printf("schedule,chunk,tiempo_s,speedup_abs,max_diff,correcto\n");
     static const struct { const char *kind; int chunk; } CASOS[] = {
         {"static", 0}, {"static", 1}, {"static", 4}, {"static", 16},
         {"static", 64}, {"dynamic", 1}, {"dynamic", 4}, {"dynamic", 16},
         {"dynamic", 64}, {"guided", 0},
     };
-    for (size_t c = 0; c < sizeof(CASOS) / sizeof(CASOS[0]); ++c)
-        run_case(CASOS[c].kind, CASOS[c].chunk, n, steps, reps, ref, t_seq, a, b);
+    enum { NUM_CASOS = sizeof(CASOS) / sizeof(CASOS[0]) };
+    double t[NUM_CASOS], t_peor[NUM_CASOS], d[NUM_CASOS];
+    for (size_t c = 0; c < NUM_CASOS; ++c) {
+        t[c] = 1e30;
+        t_peor[c] = d[c] = 0.0;
+    }
+
+    double t_seq = 1e30, t_seq_peor = 0.0, res_seq = 0.0;
+    int seq_igual = 1;
+    for (int ronda = 0; ronda < reps; ++ronda) {
+        /* Referencia secuencial (y su tiempo, para el speedup absoluto). El
+         * campo correcto se guarda en ref en la primera ronda; despues solo se
+         * cronometra (en tmp/a) y se comprueba que da el mismo residuo. */
+        double res = 0.0;
+        double ts = ronda == 0 ? mide_seq(ref, tmp, n, steps, 1, &res)
+                               : mide_seq(tmp, a, n, steps, 1, &res);
+        if (ronda == 0) res_seq = res;
+        seq_igual &= res == res_seq;
+        if (ts < t_seq) t_seq = ts;
+        if (ts > t_seq_peor) t_seq_peor = ts;
+        fprintf(stderr, "[ronda %d/%d] T1=%.6f", ronda + 1, reps, ts);
+
+        for (size_t c = 0; c < NUM_CASOS; ++c) {
+            double dc = 0.0;
+            double tc = run_case(CASOS[c].kind, CASOS[c].chunk, n, steps, 1, ref,
+                                 a, b, &dc);
+            if (tc < t[c]) t[c] = tc;
+            if (tc > t_peor[c]) t_peor[c] = tc;
+            if (dc > d[c]) d[c] = dc;
+            fprintf(stderr, " %s,%d=%.6f", CASOS[c].kind, CASOS[c].chunk, tc);
+        }
+        fprintf(stderr, "\n");
+    }
+
+    printf("# N=%zu pasos=%zu hilos=%d hilos_reales=%d repeticiones=%d "
+           "rondas=intercaladas criterio=minimo T1_secuencial=%.9f T1_peor=%.9f "
+           "residuo=%.17g\n", n, steps, hilos, reales, reps, t_seq, t_seq_peor,
+           res_seq);
+    printf("schedule,chunk,tiempo_s,speedup_abs,max_diff,correcto,tiempo_peor_s\n");
+    int todo_ok = reales == hilos && seq_igual;
+    for (size_t c = 0; c < NUM_CASOS; ++c) {
+        printf("%s,%d,%.9f,%.4f,%.3e,%d,%.9f\n", CASOS[c].kind, CASOS[c].chunk, t[c],
+               t_seq / t[c], d[c], d[c] <= TOLERANCIA, t_peor[c]);
+        todo_ok &= d[c] <= TOLERANCIA;
+    }
+    printf("# verificacion de todas las planificaciones: %s\n",
+           todo_ok ? "PASA" : "FALLA");
 
     free(ref); free(tmp); free(a); free(b);
-    return EXIT_SUCCESS;
+    return todo_ok ? EXIT_SUCCESS : EXIT_FAILURE;
 }

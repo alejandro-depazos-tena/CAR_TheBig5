@@ -1,0 +1,18 @@
+# N=2048 pasos=300 hilos=8 hilos_reales=8 repeticiones=5 rondas=intercaladas criterio=minimo SSE2=si
+# OMP_PROC_BIND=(sin fijar) OMP_PLACES=(sin fijar)
+# E2 desequilibrio static: reloj_por_paso_s=3.9976e-03 trabajo_por_paso_s min=2.8494e-03 media=3.1077e-03 max=3.3248e-03 max/min=1.17 fraccion_sin_trabajar=22.3%
+# E2 trabajo de cada hilo static (ms/paso): 3.120 2.913 3.270 3.104 2.849 3.325 3.046 3.233
+# E2 desequilibrio dynamic4: reloj_por_paso_s=3.5213e-03 trabajo_por_paso_s min=3.4524e-03 media=3.4554e-03 max=3.4591e-03 max/min=1.00 fraccion_sin_trabajar=1.9%
+# E2 trabajo de cada hilo dynamic4 (ms/paso): 3.455 3.459 3.452 3.456 3.457 3.454 3.454 3.456
+# T1_secuencial=1.669975036 T1_peor=1.797615301 residuo=0.080644327051587084
+# E1 paso_vacio_s=1.1415e-06 s_por_paso_base=3.3051e-03 fraccion_del_paso=0.03%
+variante,parte_de,cambio,tiempo_s,speedup_abs,mejora_vs_anterior,mejora_vs_base,max_diff,correcto,s_por_paso,GB_s_16B,GB_s_24B,B_celda_real,GB_s_real,tiempo_peor_s
+base,-,Ejercicio 2: parallel for por paso con schedule(static),0.991542103,1.6842,1.0000,1.0000,0.000e+00,1,3.305140e-03,20.26,30.40,24,30.40,1.098438576
+it1_region,base,una sola region paralela para todos los pasos,0.973296401,1.7158,1.0187,1.0187,0.000e+00,1,3.244321e-03,20.64,30.97,24,30.97,1.118913331
+it2_dynamic,base,schedule(static) -> schedule(dynamic 4),0.944050878,1.7689,1.0503,1.0503,0.000e+00,1,3.146836e-03,21.28,31.93,24,31.93,1.062973048
+it3_simd,it2_dynamic,#pragma omp simd en el bucle interior,1.016898128,1.6422,0.9284,0.9751,0.000e+00,1,3.389660e-03,19.76,29.64,24,29.64,1.099224236
+it4_control,it3_simd,control: it3 escrito con SSE2 a mano (escritura normal),0.913750638,1.8276,1.1129,1.0851,0.000e+00,1,3.045835e-03,21.99,32.98,24,32.98,1.037647922
+it4_nt,it4_control,escritura normal -> escritura no temporal (_mm_stream_pd),0.636620010,2.6232,1.4353,1.5575,0.000e+00,1,2.122067e-03,31.56,47.34,16,31.56,0.679377018
+alt_collapse2,base,collapse(2),1.101835742,1.5156,0.8999,0.8999,0.000e+00,1,3.672786e-03,18.24,27.35,24,27.35,1.150213642
+alt_residuo10,base,residuo solo cada 10 pasos y en el ultimo,1.017553291,1.6412,0.9744,0.9744,0.000e+00,1,3.391844e-03,19.75,29.62,24,29.62,1.212513907
+# verificacion de todas las variantes: PASA

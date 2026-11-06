@@ -1,0 +1,4 @@
+src/ejercicio6/p1_ej6.c:93:9: optimized: basic block part vectorized using 16 byte vectors
+src/ejercicio6/p1_ej6.c:61:9: optimized: basic block part vectorized using 16 byte vectors
+src/ejercicio6/p1_ej6.c:77:9: optimized: basic block part vectorized using 16 byte vectors
+src/ejercicio6/p1_ej6.c:61:9: optimized: basic block part vectorized using 16 byte vectors

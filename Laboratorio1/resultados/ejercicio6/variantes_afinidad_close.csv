@@ -1,7 +1,18 @@
-# N=2048 pasos=300 hilos=12 repeticiones=4 criterio=minimo T1_secuencial=1.791410017 modelo=16B/celda residuo=0.080644327051587084
-variante,tiempo_s,speedup_abs,mejora_vs_base,max_diff,correcto,bytes_por_paso,GB_s
-base,0.627784577,2.8535,1.0000,0.000e+00,1,66977856,32.01
-collapse2,0.828634540,2.1619,0.7576,0.000e+00,1,66977856,24.25
-region_unica,0.763516064,2.3463,0.8222,0.000e+00,1,66977856,26.32
-residuo_cada_10,0.661735597,2.7071,0.9487,0.000e+00,1,66977856,30.36
+# N=2048 pasos=300 hilos=12 hilos_reales=12 repeticiones=5 rondas=intercaladas criterio=minimo SSE2=si
 # OMP_PROC_BIND=close OMP_PLACES=cores
+# E2 desequilibrio static: reloj_por_paso_s=4.8642e-03 trabajo_por_paso_s min=2.1258e-03 media=2.6379e-03 max=2.9317e-03 max/min=1.38 fraccion_sin_trabajar=45.8%
+# E2 trabajo de cada hilo static (ms/paso): 2.266 2.203 2.866 2.851 2.814 2.832 2.862 2.897 2.932 2.871 2.137 2.126
+# E2 desequilibrio dynamic4: reloj_por_paso_s=4.8852e-03 trabajo_por_paso_s min=2.9945e-03 media=3.0358e-03 max=3.0968e-03 max/min=1.03 fraccion_sin_trabajar=37.9%
+# E2 trabajo de cada hilo dynamic4 (ms/paso): 3.039 3.023 3.083 3.097 2.994 3.034 3.089 3.008 3.009 2.998 3.019 3.035
+# T1_secuencial=1.540764187 T1_peor=2.031124302 residuo=0.080644327051587084
+# E1 paso_vacio_s=4.2337e-04 s_por_paso_base=4.8640e-03 fraccion_del_paso=8.70%
+variante,parte_de,cambio,tiempo_s,speedup_abs,mejora_vs_anterior,mejora_vs_base,max_diff,correcto,s_por_paso,GB_s_16B,GB_s_24B,B_celda_real,GB_s_real,tiempo_peor_s
+base,-,Ejercicio 2: parallel for por paso con schedule(static),1.459198184,1.0559,1.0000,1.0000,0.000e+00,1,4.863994e-03,13.77,20.66,24,20.66,1.901809784
+it1_region,base,una sola region paralela para todos los pasos,1.476406997,1.0436,0.9883,0.9883,0.000e+00,1,4.921357e-03,13.61,20.41,24,20.41,2.077976203
+it2_dynamic,base,schedule(static) -> schedule(dynamic 4),1.498917286,1.0279,0.9735,0.9735,0.000e+00,1,4.996391e-03,13.41,20.11,24,20.11,1.793174244
+it3_simd,it2_dynamic,#pragma omp simd en el bucle interior,1.528616955,1.0079,0.9806,0.9546,0.000e+00,1,5.095390e-03,13.14,19.72,24,19.72,1.581890120
+it4_control,it3_simd,control: it3 escrito con SSE2 a mano (escritura normal),1.434126870,1.0744,1.0659,1.0175,0.000e+00,1,4.780423e-03,14.01,21.02,24,21.02,1.676650440
+it4_nt,it4_control,escritura normal -> escritura no temporal (_mm_stream_pd),1.137133087,1.3550,1.2612,1.2832,0.000e+00,1,3.790444e-03,17.67,26.51,16,17.67,1.331559931
+alt_collapse2,base,collapse(2),1.503554008,1.0247,0.9705,0.9705,0.000e+00,1,5.011847e-03,13.36,20.05,24,20.05,1.583165601
+alt_residuo10,base,residuo solo cada 10 pasos y en el ultimo,1.436208062,1.0728,1.0160,1.0160,0.000e+00,1,4.787360e-03,13.99,20.99,24,20.99,1.494958353
+# verificacion de todas las variantes: PASA

@@ -2,7 +2,8 @@
  * Compilar: gcc -Wall -Wextra -O2 -std=c11 -fopenmp p1_ej2.c -o p1_ej2 -lm
  * Uso: ./p1_ej2 [N=2048] [pasos=300]
  * Imprime la tabla de verificacion con 1, 2, 4, 8, 12, 16, 20 y 24 hilos
- * y, despues, el fallo provocado (actualizacion in situ).
+ * y, despues, el fallo provocado (actualizacion in situ), ejecutado dos veces
+ * con cada numero de hilos (columna 'ejecucion').
  */
 #include <math.h>
 #include <omp.h>
@@ -156,8 +157,8 @@ int main(int argc, char **argv)
 
     printf("# N=%zu pasos=%zu tolerancia=%.0e\n", n, steps, TOLERANCIA);
     printf("tipo,hilos_pedidos,hilos_reales,max_diff,checksum,dif_checksum_rel,"
-           "residuo,bit_a_bit,correcto\n");
-    printf("secuencial,1,1,0,%.17g,0,%.17g,1,%d\n", cs_seq, r_seq, checks(seq_a, n));
+           "residuo,bit_a_bit,correcto,ejecucion\n");
+    printf("secuencial,1,1,0,%.17g,0,%.17g,1,%d,1\n", cs_seq, r_seq, checks(seq_a, n));
 
     int todo_ok = 1;
     for (size_t q = 0; q < NUM_HILOS; ++q) {
@@ -171,22 +172,31 @@ int main(int argc, char **argv)
         int ok = reales == HILOS[q] && diff <= TOLERANCIA && dcs <= TOLERANCIA
                  && checks(par_a, n);
         todo_ok &= ok;
-        printf("jacobi_omp,%d,%d,%.3e,%.17g,%.3e,%.17g,%d,%d\n", HILOS[q], reales,
+        printf("jacobi_omp,%d,%d,%.3e,%.17g,%.3e,%.17g,%d,%d,1\n", HILOS[q], reales,
                diff, cs, dcs, r_par, diff == 0.0, ok);
     }
 
     /* Fallo provocado: la verificacion debe rechazarlo y su resultado debe
-     * cambiar con el numero de hilos (comparese el checksum entre filas). */
+     * cambiar con el numero de hilos (comparese el checksum entre filas).
+     * Se ejecuta dos veces con cada numero de hilos: si las dos ejecuciones
+     * coinciden y el resultado cambia al cambiar los hilos, es la firma de la
+     * actualizacion in situ (apartado V.A); una variable compartida que debia
+     * ser privada cambiaria, en cambio, entre ejecuciones con los mismos hilos.
+     * Con N grande y pocos pasos el calor aun no ha llegado a las fronteras
+     * entre franjas de los primeros hilos: ahi la diferencia aparece mas tarde
+     * (por eso se ejecuta tambien con N = 256). */
     for (size_t q = 0; q < NUM_HILOS; ++q) {
         omp_set_num_threads(HILOS[q]);
         int reales = hilos_reales();
-        init(par_a, par_b, n);
-        in_situ(par_a, n, steps);
-        double diff = difference(seq_a, par_a, n);
-        double cs = checksum(par_a, n);
-        printf("in_situ,%d,%d,%.3e,%.17g,%.3e,NA,%d,%d\n", HILOS[q], reales, diff,
-               cs, fabs(cs - cs_seq) / fabs(cs_seq), diff == 0.0,
-               diff <= TOLERANCIA);
+        for (int ejec = 1; ejec <= 2; ++ejec) {
+            init(par_a, par_b, n);
+            in_situ(par_a, n, steps);
+            double diff = difference(seq_a, par_a, n);
+            double cs = checksum(par_a, n);
+            printf("in_situ,%d,%d,%.3e,%.17g,%.3e,NA,%d,%d,%d\n", HILOS[q], reales,
+                   diff, cs, fabs(cs - cs_seq) / fabs(cs_seq), diff == 0.0,
+                   diff <= TOLERANCIA, ejec);
+        }
     }
 
     printf("# verificacion Jacobi paralelo: %s\n", todo_ok ? "PASA" : "FALLA");

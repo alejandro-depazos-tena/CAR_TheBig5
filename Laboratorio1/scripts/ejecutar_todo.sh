@@ -10,9 +10,10 @@ CFLAGS="-Wall -Wextra -O2 -std=c11 -fopenmp"
 R=resultados
 mkdir -p bin $R/ejercicio{1,2,3,4,5,6}
 
-echo "== Compilacion ($CFLAGS)"
+echo "== Compilacion del Ejercicio 1 ($CFLAGS)"
+echo "   (los ejercicios 2 a 6 los compila scripts/ejecutar_ej2_en_adelante.sh)"
 : > $R/compilacion.txt
-for f in src/ejercicio*/*.c; do
+for f in src/ejercicio1/*.c; do
     exe=bin/$(basename "$f" .c)
     echo "gcc $CFLAGS $f -o $exe -lm" | tee -a $R/compilacion.txt
     gcc $CFLAGS "$f" -o "$exe" -lm 2>&1 | tee -a $R/compilacion.txt
@@ -43,33 +44,9 @@ bin/p1_ej1 64 100000 1e-6 simulacion comprobar > $R/ejercicio1/prueba_tolerancia
 bin/p1_ej1 512 300 1e-6 medida comprobar > $R/ejercicio1/prueba_pasos_fijos.txt
 bin/p1_ej1 512 300 1e-6 medida comprobar csv > $R/ejercicio1/prueba_pasos_fijos.csv
 
-echo "== Ejercicio 2: verificacion con 8 recuentos de hilos"
-bin/p1_ej2 2048 300 > $R/ejercicio2/verificacion_2048.csv || true
-bin/p1_ej2 256 300 > $R/ejercicio2/verificacion_256.csv || true
-
-echo "== Ejercicio 3: escalabilidad fuerte (malla grande y pequena)"
-bin/p1_ej3 2048 300 4 > $R/ejercicio3/fuerte_2048.csv
-# 256^2 * 19200 pasos = 2048^2 * 300 pasos: mismo trabajo total
-bin/p1_ej3 256 19200 4 > $R/ejercicio3/fuerte_256.csv
-
-echo "== Ejercicio 4: escalabilidad debil"
-bin/p1_ej4 1024 300 4 > $R/ejercicio4/debil.csv
-
-echo "== Ejercicio 5: planificaciones (12 hilos)"
-bin/p1_ej5 2048 300 12 4 > $R/ejercicio5/planificaciones.csv
-
-echo "== Ejercicio 6: techo de memoria (STREAM triad) y variantes"
-bin/p1_stream 40000000 10 > $R/ejercicio6/stream.csv
-bin/p1_ej6 2048 300 12 4 > $R/ejercicio6/variantes.csv
-OMP_PROC_BIND=close OMP_PLACES=cores bin/p1_ej6 2048 300 12 4 \
-    > $R/ejercicio6/variantes_afinidad_close.csv
-OMP_PROC_BIND=spread OMP_PLACES=threads bin/p1_ej6 2048 300 12 4 \
-    > $R/ejercicio6/variantes_afinidad_spread.csv
-# Vectorizacion del bucle interior (candidato de la lista del enunciado)
-gcc $CFLAGS -fopt-info-vec-optimized src/ejercicio6/p1_ej6.c -o /dev/null -lm \
-    > $R/ejercicio6/vectorizacion.txt 2>&1 || true
-
-echo "== Graficas"
+echo "== Grafica del Ejercicio 1"
 "${PYTHON:-python3}" src/ejercicio1/grafica_ej1.py
-"${PYTHON:-python3}" src/graficas_lab1.py
+
+echo "== Ejercicios 2 a 6 (compilacion, medidas, graficas y registro de salidas)"
+bash scripts/ejecutar_ej2_en_adelante.sh
 echo "Hecho: $(date '+%F %T')"

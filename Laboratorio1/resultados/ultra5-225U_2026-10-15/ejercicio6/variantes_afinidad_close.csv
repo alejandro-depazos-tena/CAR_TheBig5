@@ -1,0 +1,7 @@
+# N=2048 pasos=300 hilos=12 repeticiones=4 criterio=minimo T1_secuencial=1.791410017 modelo=16B/celda residuo=0.080644327051587084
+variante,tiempo_s,speedup_abs,mejora_vs_base,max_diff,correcto,bytes_por_paso,GB_s
+base,0.627784577,2.8535,1.0000,0.000e+00,1,66977856,32.01
+collapse2,0.828634540,2.1619,0.7576,0.000e+00,1,66977856,24.25
+region_unica,0.763516064,2.3463,0.8222,0.000e+00,1,66977856,26.32
+residuo_cada_10,0.661735597,2.7071,0.9487,0.000e+00,1,66977856,30.36
+# OMP_PROC_BIND=close OMP_PLACES=cores
