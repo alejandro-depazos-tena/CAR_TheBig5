@@ -1,0 +1,24 @@
+$ mpirun --use-hwthread-cpus -np 4 bin/p4_ej1        # ejecucion 1 de 3
+hola, soy el rango 0 de 4
+hola, soy el rango 1 de 4
+hola, soy el rango 2 de 4
+hola, soy el rango 3 de 4
+suma con 4 procesos = 1.885618e+12  el rango 0 tardo 0.1087 s
+  suma completa = 1.885618083164316e+12  el mas lento fue el rango 3: 0.1183 s
+
+$ mpirun --use-hwthread-cpus -np 4 bin/p4_ej1        # ejecucion 2 de 3
+hola, soy el rango 2 de 4
+hola, soy el rango 0 de 4
+hola, soy el rango 1 de 4
+hola, soy el rango 3 de 4
+suma con 4 procesos = 1.885618e+12  el rango 0 tardo 0.0884 s
+  suma completa = 1.885618083164316e+12  el mas lento fue el rango 3: 0.1085 s
+
+$ mpirun --use-hwthread-cpus -np 4 bin/p4_ej1        # ejecucion 3 de 3
+hola, soy el rango 2 de 4
+hola, soy el rango 3 de 4
+hola, soy el rango 0 de 4
+hola, soy el rango 1 de 4
+suma con 4 procesos = 1.885618e+12  el rango 0 tardo 0.1147 s
+  suma completa = 1.885618083164316e+12  el mas lento fue el rango 0: 0.1147 s
+
