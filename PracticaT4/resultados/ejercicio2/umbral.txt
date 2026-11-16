@@ -1,0 +1,30 @@
+Busqueda del umbral del interbloqueo (modo send), plazo maximo 10 s por ejecucion.
+Orden de cada prueba: timeout -k 3 10 mpirun --use-hwthread-cpus -np 2 bin/p4_ej2 <m> send
+
+== 2a. Doblando M en modo send desde 64 doubles
+  [doblar]   send      m =        64 doubles (   0.000 MB)      4.7 us por intercambio dato correcto
+  [doblar]   send      m =       128 doubles (   0.001 MB)      2.2 us por intercambio dato correcto
+  [doblar]   send      m =       256 doubles (   0.002 MB)      2.6 us por intercambio dato correcto
+  [doblar]   m = 512 doubles (4096 bytes): SE CUELGA (plazo 10 s)
+== 2b. Biseccion entre 256 (pasa) y 512 (se cuelga)
+  [biseccion] send      m =       384 doubles (   0.003 MB)      1.6 us por intercambio dato correcto
+  [biseccion] send      m =       448 doubles (   0.003 MB)      4.0 us por intercambio dato correcto
+  [biseccion] send      m =       480 doubles (   0.004 MB)      3.2 us por intercambio dato correcto
+  [biseccion] send      m =       496 doubles (   0.004 MB)      1.9 us por intercambio dato correcto
+  [biseccion] m = 504 doubles (4032 bytes): SE CUELGA (plazo 10 s)
+  [biseccion] send      m =       500 doubles (   0.004 MB)      4.3 us por intercambio dato correcto
+  [biseccion] send      m =       502 doubles (   0.004 MB)      2.0 us por intercambio dato correcto
+  [biseccion] m = 503 doubles (4024 bytes): SE CUELGA (plazo 10 s)
+== 3a. Repetir la frontera: 502 debe pasar siempre y 503 colgarse siempre
+  [repeticion] send      m =       502 doubles (   0.004 MB)      1.9 us por intercambio dato correcto
+  [repeticion] send      m =       502 doubles (   0.004 MB)      1.8 us por intercambio dato correcto
+  [repeticion] send      m =       502 doubles (   0.004 MB)      6.3 us por intercambio dato correcto
+  [repeticion] m = 503 doubles (4024 bytes): SE CUELGA (plazo 10 s)
+  [repeticion] m = 503 doubles (4024 bytes): SE CUELGA (plazo 10 s)
+== 3b. Los tres arreglos con m = 503, donde send se cuelga
+  [arreglos] sendrecv  m =       503 doubles (   0.004 MB)      4.2 us por intercambio dato correcto
+  [arreglos] orden     m =       503 doubles (   0.004 MB)      3.6 us por intercambio dato correcto
+  [arreglos] noblo     m =       503 doubles (   0.004 MB)      2.3 us por intercambio dato correcto
+
+UMBRAL: con 502 doubles (4016 bytes) funciona;
+        con 503 doubles (4024 bytes) se cuelga.
